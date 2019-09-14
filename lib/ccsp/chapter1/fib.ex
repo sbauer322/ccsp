@@ -6,6 +6,7 @@ defmodule CCSP.Chapter1.Fib do
     fib1(n - 1) + fib1(n - 2)
   end
 
+  @spec fib2(integer) :: integer
   def fib2(n) when n < 2, do: n
 
   def fib2(n) do
@@ -25,6 +26,7 @@ defmodule CCSP.Chapter1.Fib do
     end
   end
 
+  @spec fib4(integer, integer) :: integer
   def fib4(n, acc \\ 0) do
     if n < 2 do
       n
@@ -34,6 +36,7 @@ defmodule CCSP.Chapter1.Fib do
   end
 
   # Generator function... use with Enum.take
+  @spec fib6() :: integer
   def fib6() do
     Stream.unfold({0, 1}, fn {current, next} ->
       {current, {next, current + next}}

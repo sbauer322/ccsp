@@ -34,7 +34,8 @@ defmodule CCSP.MixProject do
       {:ex_doc, "~> 0.19"},
       {:earmark, "~> 1.2.4"},
       {:stream_data, "~> 0.1", only: :test},
-      {:excoveralls, "~> 0.10", only: :test}
+      {:excoveralls, "~> 0.10", only: :test},
+      {:dialyxir, "~> 0.5", only: [:dev], runtime: false}
     ]
   end
 
