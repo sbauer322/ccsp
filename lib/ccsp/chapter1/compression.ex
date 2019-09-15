@@ -1,16 +1,18 @@
 defmodule CCSP.Chapter1.Compression do
   import Bitwise, only: :macros
 
-  @moduledoc false
+  @moduledoc """
+  Corresponds to CCSP in Python, Section 1.2, titled "Trivial Compression"
+  """
 
-  @spec compress(String.t) :: integer
+  @spec compress(String.t()) :: integer
   def compress(gene) do
     String.upcase(gene)
     |> String.graphemes()
     |> Enum.reduce(1, &convert_to_bit/2)
   end
 
-  @spec decompress(integer) :: String.t
+  @spec decompress(integer) :: String.t()
   def decompress(value) do
     # subtract 1 to offset sentinel value during compression
     range = stepped_bit_range(value - 1, 2)
@@ -22,7 +24,7 @@ defmodule CCSP.Chapter1.Compression do
     |> String.reverse()
   end
 
-  @spec convert_to_bit(String.t, integer) :: integer
+  @spec convert_to_bit(String.t(), integer) :: integer
   def convert_to_bit(nucleotide, acc) do
     shiftedAcc = acc <<< 2
 
@@ -34,7 +36,7 @@ defmodule CCSP.Chapter1.Compression do
     end
   end
 
-  @spec convert_to_char(integer, String.t) :: String.t
+  @spec convert_to_char(integer, String.t()) :: String.t()
   def convert_to_char(bits, acc) do
     cond do
       bits == 0 -> acc <> "A"

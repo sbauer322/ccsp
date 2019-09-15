@@ -1,5 +1,7 @@
 defmodule CCSP.Chapter1.Fib do
-  @moduledoc false
+  @moduledoc """
+  Corresponds to CCSP in Python, Section 1.1, titled "The Fibonacci Sequence"
+  """
 
   # Infinite recursion example
   def fib1(n) do
