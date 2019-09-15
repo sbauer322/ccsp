@@ -38,7 +38,7 @@ defmodule CCSP.Chapter1.Fib do
   end
 
   # Generator function... use with Enum.take
-  @spec fib6() :: integer
+  @spec fib6() :: (... -> integer)
   def fib6() do
     Stream.unfold({0, 1}, fn {current, next} ->
       {current, {next, current + next}}
