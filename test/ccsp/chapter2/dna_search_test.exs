@@ -22,5 +22,4 @@ defmodule CCSP.Chapter2.DnaSearchTest do
     assert !DnaSearch.linear_contains?(gene, codon_1)
     assert !DnaSearch.linear_contains?(gene, codon_2)
   end
-
 end
