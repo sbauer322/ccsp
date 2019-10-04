@@ -13,12 +13,12 @@ defmodule CCSP.Chapter2.DnaSearch do
 
   @spec character_to_nucleotide(String.t) :: nucleotide
   defp character_to_nucleotide(nucleotide) do
-    uppercase = String.upcase(nucleotide)
+    nucleotide = String.upcase(nucleotide)
     cond do
-      uppercase == "A" -> 0
-      uppercase == "C" -> 1
-      uppercase == "G" -> 2
-      uppercase == "T" -> 3
+      nucleotide == "A" -> 0
+      nucleotide == "C" -> 1
+      nucleotide == "G" -> 2
+      nucleotide == "T" -> 3
     end
   end
 
@@ -36,7 +36,7 @@ defmodule CCSP.Chapter2.DnaSearch do
     |> Enum.chunk_every(3, 1, :discard)
   end
 
-  @spec linear_contains?(gene, codon) :: boolean
+  @spec linear_contains?(String.t, String.t) :: boolean
   def linear_contains?(gene, codon) do
     gene = string_to_gene(gene)
     codon = string_to_nucleotides(codon)
