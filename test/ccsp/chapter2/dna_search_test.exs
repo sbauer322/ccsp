@@ -5,7 +5,7 @@ defmodule CCSP.Chapter2.DnaSearchTest do
   alias CCSP.Chapter2.DnaSearch
   @moduledoc false
 
-  test "finds expected matches" do
+  test "linear search finds expected matches" do
     gene = "ACACACCACACGGGACGAT"
     codon_1 = "ACG"
     codon_2 = "gat"
@@ -14,12 +14,30 @@ defmodule CCSP.Chapter2.DnaSearchTest do
     assert DnaSearch.linear_contains?(gene, codon_2)
   end
 
-  test "finds no matches" do
+  test "linear search finds no matches" do
     gene = "AAAAAAAAAAAAAAAAAA"
     codon_1 = "ACG"
     codon_2 = "gat"
 
     assert !DnaSearch.linear_contains?(gene, codon_1)
     assert !DnaSearch.linear_contains?(gene, codon_2)
+  end
+
+  test "binary search finds expected matches" do
+    gene = "ACACACCACACGGGACGAT"
+    codon_1 = "ACG"
+    codon_2 = "gat"
+
+    assert DnaSearch.binary_contains?(gene, codon_1)
+    assert DnaSearch.binary_contains?(gene, codon_2)
+  end
+
+  test "binary search finds no matches" do
+    gene = "AAAAAAAAAAAAAAAAAA"
+    codon_1 = "ACG"
+    codon_2 = "gat"
+
+    assert !DnaSearch.binary_contains?(gene, codon_1)
+    assert !DnaSearch.binary_contains?(gene, codon_2)
   end
 end
