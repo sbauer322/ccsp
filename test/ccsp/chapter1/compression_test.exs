@@ -6,14 +6,16 @@ defmodule CCSP.Chapter1.CompressionTest do
   @moduledoc false
 
   def gene_generator() do
-    gen all gene <- StreamData.string([?A, ?C, ?G, ?T]),
-            gene != "" do
+    gen all(
+          gene <- StreamData.string([?A, ?C, ?G, ?T]),
+          gene != ""
+        ) do
       gene
     end
   end
 
   property "raw value matches decompressed value" do
-    check all gene <- gene_generator() do
+    check all(gene <- gene_generator()) do
       assert Compression.decompress(Compression.compress(gene)) == gene
     end
   end
