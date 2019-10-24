@@ -8,9 +8,9 @@ defmodule CCSP.Chapter2.MazeTest do
     maze = Maze.init(9, 9, 0.2, {0, 0}, {9, 9})
 
     # 0-indexed, ten total
-    assert 10 == length(maze)
+    assert 10 == length(maze.state)
 
-    Enum.each(maze, fn row ->
+    Enum.each(maze.state, fn row ->
       assert 10 == length(row)
     end)
 

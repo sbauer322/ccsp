@@ -41,7 +41,7 @@ defmodule CCSP.MixProject do
 
   defp escript_config do
     [
-      main_module: Weather.CLI
+      main_module: CCSP.Start
     ]
   end
 end

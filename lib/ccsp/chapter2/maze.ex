@@ -1,8 +1,13 @@
 defmodule CCSP.Chapter2.Maze do
   alias CCSP.Chapter2.MazeLocation
+  alias __MODULE__, as: T
 
   @type location :: {non_neg_integer, non_neg_integer}
-  @type maze :: list(list(MazeLocation.t()))
+  @type maze_state :: list(list(MazeLocation.t()))
+
+  @opaque t :: __MODULE__.t()
+
+  defstruct state: [], total_rows: 0, total_columns: 0
 
   @spec cell(String.t()) :: String.t()
   def cell(str) do
@@ -15,9 +20,15 @@ defmodule CCSP.Chapter2.Maze do
     end
   end
 
-  @spec init(integer, integer, float, location, location) :: any
+  @spec new(maze_state, non_neg_integer, non_neg_integer) :: t
+  def new(state, total_rows, total_columns) do
+    %T{state: state, total_rows: total_rows, total_columns: total_columns}
+  end
+
+  @spec init(integer, integer, float, location, location) :: t
   def init(rows \\ 9, columns \\ 9, sparseness \\ 0.2, start \\ {0, 0}, goal \\ {9, 9}) do
     randomly_fill_maze(rows, columns, sparseness)
+    #    empty_maze(rows, columns)
     |> List.update_at(
       elem(start, 0),
       &List.update_at(&1, elem(start, 1), fn location -> %{location | value: cell("START")} end)
@@ -26,23 +37,24 @@ defmodule CCSP.Chapter2.Maze do
       elem(goal, 0),
       &List.update_at(&1, elem(goal, 1), fn location -> %{location | value: cell("GOAL")} end)
     )
+    |> new(rows + 1, columns + 1)
   end
 
-  @spec get_cell(maze, integer, integer) :: String.t()
+  @spec get_cell(t, integer, integer) :: String.t()
   def get_cell(maze, row, column) do
-    maze
+    maze.state
     |> Enum.at(row)
     |> Enum.at(column)
   end
 
-  @spec empty_maze(integer, integer) :: maze
+  @spec empty_maze(integer, integer) :: maze_state
   defp empty_maze(rows, columns) do
     Enum.map(0..rows, fn row ->
       Enum.map(0..columns, fn column -> MazeLocation.new(cell("EMPTY"), row, column) end)
     end)
   end
 
-  @spec randomly_fill_maze(integer, integer, float) :: maze
+  @spec randomly_fill_maze(integer, integer, float) :: maze_state
   defp randomly_fill_maze(rows, columns, sparseness) do
     Enum.map(0..rows, fn row ->
       Enum.map(0..columns, fn column ->
@@ -55,35 +67,56 @@ defmodule CCSP.Chapter2.Maze do
     end)
   end
 
-  @spec successors(maze, location, integer, integer) :: list(any)
-  def successors(maze, {row, column}, total_rows, total_columns) do
+  @spec successors(t, location) :: list(MazeLocation.t())
+  def successors(maze, location) do
+    row = location.row
+    column = location.column
+    total_rows = maze.total_rows
+    total_columns = maze.total_columns
+
     south =
-      if row + 1 < total_rows and get_cell(maze, row + 1, column) != cell("BLOCKED") do
-        {row + 1, column}
+      if row + 1 < total_rows and get_cell(maze, row + 1, column).value != cell("BLOCKED") do
+        get_cell(maze, row + 1, column)
       end
 
     north =
-      if row - 1 >= 0 and get_cell(maze, row - 1, column) != cell("BLOCKED") do
-        {row - 1, column}
+      if row - 1 >= 0 and get_cell(maze, row - 1, column).value != cell("BLOCKED") do
+        get_cell(maze, row - 1, column)
       end
 
     east =
-      if column + 1 < total_columns and get_cell(maze, row, column + 1) != cell("BLOCKED") do
-        {row, column + 1}
+      if column + 1 < total_columns and get_cell(maze, row, column + 1).value != cell("BLOCKED") do
+        get_cell(maze, row, column + 1)
       end
 
     west =
-      if column - 1 >= 0 and get_cell(maze, row, column - 1) != cell("BLOCKED") do
-        {row, column - 1}
+      if column - 1 >= 0 and get_cell(maze, row, column - 1).value != cell("BLOCKED") do
+        get_cell(maze, row, column - 1)
       end
 
-    Enum.filter([south, north, east, west], &(&1 != nil))
+    Enum.filter([west, east, north, south], &(&1 != nil))
   end
 
-  @spec pretty_print(maze) :: list(list(String.t()))
+  @spec pretty_print(t) :: list(list(String.t()))
   def pretty_print(maze) do
     Enum.map(maze, fn row ->
       Enum.map(row, & &1.value)
     end)
   end
+
+  def mark(maze, path) do
+    Enum.reduce(path, maze.state, fn n, acc ->
+      List.update_at(
+        acc,
+        n.row,
+        &List.update_at(&1, n.column, fn location -> %{location | value: cell("PATH")} end)
+      )
+    end)
+  end
+
+  #  def mark(self, path: List[MazeLocation]):
+  #    for maze_location in path:
+  #      self._grid[maze_location.row][maze_location.column] = Cell.PATH
+  #      self._grid[self.start.row][self.start.column] = Cell.START
+  #      self._grid[self.goal.row][self.goal.column] = Cell.GOAL
 end
