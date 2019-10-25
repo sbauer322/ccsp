@@ -108,7 +108,7 @@ defmodule CCSP.Chapter2.Maze do
   @spec pretty_print(list(list(String.t()))) :: list(list(String.t()))
   def pretty_print(maze) do
     Enum.map(maze, fn row ->
-      Enum.map(row, &(&1.value))
+      Enum.map(row, & &1.value)
     end)
   end
 
