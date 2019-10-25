@@ -35,7 +35,8 @@ defmodule CCSP.MixProject do
       {:earmark, "~> 1.2.4"},
       {:stream_data, "~> 0.1", only: :test},
       {:excoveralls, "~> 0.10", only: :test},
-      {:dialyxir, "~> 0.5", only: [:dev], runtime: false}
+      {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
+      {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false}
     ]
   end
 

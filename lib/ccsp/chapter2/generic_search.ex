@@ -1,6 +1,8 @@
 defmodule CCSP.Chapter2.GenericSearch do
   alias CCSP.Chapter2.Stack
   alias CCSP.Chapter2.Node
+  alias CCSP.Chapter2.Maze
+  alias CCSP.Chapter2.MazeLocation
 
   @moduledoc """
   Corresponds to CCSP in Python, Section 2.2 titled "Maze Solving"
@@ -31,6 +33,7 @@ defmodule CCSP.Chapter2.GenericSearch do
     end
   end
 
+  @spec depth_first_search(Maze.t(), MazeLocation.t(), MazeLocation.t(), any) :: Node.t()
   def depth_first_search(maze, initial, goal, successors_fn) do
     frontier =
       Stack.new()
@@ -43,6 +46,7 @@ defmodule CCSP.Chapter2.GenericSearch do
     dfs(maze, frontier, explored, successors_fn)
   end
 
+  @spec dfs(Maze.t(), Stack.t(), MapSet.t(), any) :: Node.t()
   defp dfs(maze, frontier, explored, successors_fn) do
     if Stack.empty?(frontier) == false do
       {current_node, frontier} = Stack.pop(frontier)
@@ -69,11 +73,7 @@ defmodule CCSP.Chapter2.GenericSearch do
     end
   end
 
-  #  defp dfs(maze, frontier, explored, successors_fn) when frontier == [] do
-  #    IO.puts("dfs 3")
-  #    nil
-  #  end
-
+  @spec node_to_path(Node.t()) :: list(Node.t())
   def node_to_path(n) when n == nil do
     []
   end
@@ -84,13 +84,11 @@ defmodule CCSP.Chapter2.GenericSearch do
   end
 
   defp node_to_path(n, path) do
-    cond do
-      n.parent == nil ->
-        path
-
-      n.parent != nil ->
-        n = n.parent
-        node_to_path(n, [n.state | path])
+    if n.parent == nil do
+      path
+    else
+      n = n.parent
+      node_to_path(n, [n.state | path])
     end
   end
 end
