@@ -11,8 +11,8 @@ defmodule CCSP.Chapter2.DnaSearch do
 
   @type gene :: list(codon)
 
-  @spec character_to_nucleotide(String.t()) :: nucleotide
-  defp character_to_nucleotide(nucleotide) do
+  @spec grapheme_to_nucleotide(String.t()) :: nucleotide
+  defp grapheme_to_nucleotide(nucleotide) do
     nucleotide = String.upcase(nucleotide)
 
     cond do
@@ -27,7 +27,9 @@ defmodule CCSP.Chapter2.DnaSearch do
   def string_to_nucleotides(str) do
     str
     |> String.graphemes()
-    |> Enum.reduce([], &[character_to_nucleotide(&1) | &2])
+    |> Enum.reduce([], fn elem, acc ->
+      [grapheme_to_nucleotide(elem) | acc]
+    end)
   end
 
   @spec string_to_gene(String.t()) :: gene
@@ -45,7 +47,6 @@ defmodule CCSP.Chapter2.DnaSearch do
     Enum.any?(gene, &(&1 == codon))
   end
 
-  # need to double check if this function is tail call optimized
   @spec binary_search(gene, codon, non_neg_integer, non_neg_integer) :: boolean
   defp binary_search(gene, key_codon, low, high) when low <= high do
     mid = div(low + high, 2)
@@ -54,7 +55,7 @@ defmodule CCSP.Chapter2.DnaSearch do
     cond do
       gene_codon < key_codon -> binary_search(gene, key_codon, mid + 1, high)
       gene_codon > key_codon -> binary_search(gene, key_codon, low, mid - 1)
-      true -> true
+      gene_codon == key_codon -> true
     end
   end
 

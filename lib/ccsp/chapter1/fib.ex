@@ -23,7 +23,7 @@ defmodule CCSP.Chapter1.Fib do
       |> (fn x -> Map.put(memoMap, n, x) end).()
       |> Map.get(n)
     else
-      IO.inspect(memoMap)
+      # IO.inspect(memoMap)
       Map.get(memoMap, n)
     end
   end
