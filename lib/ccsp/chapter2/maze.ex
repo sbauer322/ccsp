@@ -105,15 +105,16 @@ defmodule CCSP.Chapter2.Maze do
     Enum.filter([west, east, north, south], &(&1 != nil))
   end
 
-  @spec pretty_print(list(list(String.t()))) :: list(list(String.t()))
+  @spec pretty_print(list(list(String.t()))) :: :ok
   def pretty_print(maze) do
-    Enum.map(maze, fn row ->
-      Enum.map(row, & &1.value)
+    Enum.each(maze, fn row ->
+      Enum.each(row, &IO.write(" #{&1.value} "))
+      IO.puts("")
     end)
   end
 
-  @spec mark(t, list(Node.t())) :: list(list(String.t()))
-  def mark(maze, path) do
+  @spec mark(t, list(Node.t()), MazeLocation.t(), MazeLocation.t()) :: list(list(String.t()))
+  def mark(maze, path, start, goal) do
     Enum.reduce(path, maze.state, fn n, acc ->
       List.update_at(
         acc,
@@ -121,5 +122,13 @@ defmodule CCSP.Chapter2.Maze do
         &List.update_at(&1, n.column, fn location -> %{location | value: cell("PATH")} end)
       )
     end)
+    |> List.update_at(
+      start.row,
+      &List.update_at(&1, start.column, fn location -> %{location | value: cell("START")} end)
+    )
+    |> List.update_at(
+      goal.row,
+      &List.update_at(&1, goal.column, fn location -> %{location | value: cell("GOAL")} end)
+    )
   end
 end
