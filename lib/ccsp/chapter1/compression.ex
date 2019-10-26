@@ -26,13 +26,13 @@ defmodule CCSP.Chapter1.Compression do
 
   @spec convert_to_bit(String.t(), integer) :: integer
   def convert_to_bit(nucleotide, acc) do
-    shiftedAcc = acc <<< 2
+    shifted_acc = acc <<< 2
 
     cond do
-      nucleotide == "A" -> shiftedAcc ||| 0
-      nucleotide == "C" -> shiftedAcc ||| 1
-      nucleotide == "G" -> shiftedAcc ||| 2
-      nucleotide == "T" -> shiftedAcc ||| 3
+      nucleotide == "A" -> shifted_acc ||| 0
+      nucleotide == "C" -> shifted_acc ||| 1
+      nucleotide == "G" -> shifted_acc ||| 2
+      nucleotide == "T" -> shifted_acc ||| 3
     end
   end
 
