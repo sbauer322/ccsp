@@ -99,7 +99,7 @@ defmodule CCSP.Chapter2.GenericSearch do
         {frontier, explored} =
           Enum.reduce(successors_fn.(maze, current_state), {frontier, explored}, fn child,
                                                                                     {frontier,
-                                                                                      explored} ->
+                                                                                     explored} ->
             if Enum.member?(explored, child) == true do
               {frontier, explored}
             else

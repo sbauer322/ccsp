@@ -16,11 +16,11 @@ defmodule CCSP.Chapter2.Queue do
 
   @spec pop(t) :: {any, t}
   def pop(queue) do
-    cond do
-      empty?(queue) -> {nil, queue}
-      true ->
-        {{:value, x}, q} = :queue.out(queue.list)
-        {x, %T{list: q}}
+    if empty?(queue) do
+      {nil, queue}
+    else
+      {{:value, x}, q} = :queue.out(queue.list)
+      {x, %T{list: q}}
     end
   end
 
