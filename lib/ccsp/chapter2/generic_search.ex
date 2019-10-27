@@ -1,5 +1,6 @@
 defmodule CCSP.Chapter2.GenericSearch do
   alias CCSP.Chapter2.Stack
+  alias CCSP.Chapter2.Queue
   alias CCSP.Chapter2.Node
   alias CCSP.Chapter2.Maze
   alias CCSP.Chapter2.MazeLocation
@@ -69,6 +70,46 @@ defmodule CCSP.Chapter2.GenericSearch do
           end)
 
         dfs(maze, frontier, explored, successors_fn)
+      end
+    end
+  end
+
+  @spec breadth_first_search(Maze.t(), MazeLocation.t(), MazeLocation.t(), any) :: Node.t()
+  def breadth_first_search(maze, initial, goal, successors_fn) do
+    frontier =
+      Queue.new()
+      |> Queue.push(Node.new(initial, nil))
+
+    explored =
+      MapSet.new()
+      |> MapSet.put(initial)
+
+    bfs(maze, frontier, explored, successors_fn)
+  end
+
+  @spec bfs(Maze.t(), Queue.t(), MapSet.t(), any) :: Node.t()
+  defp bfs(maze, frontier, explored, successors_fn) do
+    if Queue.empty?(frontier) == false do
+      {current_node, frontier} = Queue.pop(frontier)
+      current_state = current_node.state
+
+      if current_state.value == "G" do
+        current_node
+      else
+        {frontier, explored} =
+          Enum.reduce(successors_fn.(maze, current_state), {frontier, explored}, fn child,
+                                                                                    {frontier,
+                                                                                      explored} ->
+            if Enum.member?(explored, child) == true do
+              {frontier, explored}
+            else
+              frontier = Queue.push(frontier, Node.new(child, current_node))
+              explored = MapSet.put(explored, child)
+              {frontier, explored}
+            end
+          end)
+
+        bfs(maze, frontier, explored, successors_fn)
       end
     end
   end
