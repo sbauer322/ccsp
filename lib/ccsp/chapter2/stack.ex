@@ -17,7 +17,7 @@ defmodule CCSP.Chapter2.Stack do
   @spec pop(t) :: {any, t}
   def pop(stack) do
     cond do
-      empty?(stack) -> {nil, new()}
+      empty?(stack) -> {nil, stack}
       length(stack.list) == 1 -> {hd(stack.list), new()}
       length(stack.list) > 1 -> {hd(stack.list), new(tl(stack.list))}
     end
