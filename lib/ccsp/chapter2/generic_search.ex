@@ -34,8 +34,8 @@ defmodule CCSP.Chapter2.GenericSearch do
     end
   end
 
-  @spec depth_first_search(Maze.t(), MazeLocation.t(), MazeLocation.t(), any, any) :: Node.t()
-  def depth_first_search(maze, initial, goal, goal_fn, successors_fn) do
+  @spec depth_first_search(Maze.t(), MazeLocation.t(), any, any) :: Node.t()
+  def depth_first_search(maze, initial, goal_fn, successors_fn) do
     frontier =
       Stack.new()
       |> Stack.push(Node.new(initial, nil))
@@ -74,8 +74,8 @@ defmodule CCSP.Chapter2.GenericSearch do
     end
   end
 
-  @spec breadth_first_search(Maze.t(), MazeLocation.t(), MazeLocation.t(), any, any) :: Node.t()
-  def breadth_first_search(maze, initial, goal, goal_fn, successors_fn) do
+  @spec breadth_first_search(Maze.t(), MazeLocation.t(), any, any) :: Node.t()
+  def breadth_first_search(maze, initial, goal_fn, successors_fn) do
     frontier =
       Queue.new()
       |> Queue.push(Node.new(initial, nil))
