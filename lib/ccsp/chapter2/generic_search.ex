@@ -34,8 +34,8 @@ defmodule CCSP.Chapter2.GenericSearch do
     end
   end
 
-  @spec depth_first_search(Maze.t(), MazeLocation.t(), MazeLocation.t(), any) :: Node.t()
-  def depth_first_search(maze, initial, goal, successors_fn) do
+  @spec depth_first_search(Maze.t(), MazeLocation.t(), MazeLocation.t(), any, any) :: Node.t()
+  def depth_first_search(maze, initial, goal, goal_fn, successors_fn) do
     frontier =
       Stack.new()
       |> Stack.push(Node.new(initial, nil))
@@ -44,16 +44,16 @@ defmodule CCSP.Chapter2.GenericSearch do
       MapSet.new()
       |> MapSet.put(initial)
 
-    dfs(maze, frontier, explored, successors_fn)
+    dfs(maze, frontier, explored, goal_fn, successors_fn)
   end
 
-  @spec dfs(Maze.t(), Stack.t(), MapSet.t(), any) :: Node.t()
-  defp dfs(maze, frontier, explored, successors_fn) do
+  @spec dfs(Maze.t(), Stack.t(), MapSet.t(), any, any) :: Node.t()
+  defp dfs(maze, frontier, explored, goal_fn, successors_fn) do
     if Stack.empty?(frontier) == false do
       {current_node, frontier} = Stack.pop(frontier)
       current_state = current_node.state
 
-      if current_state.value == "G" do
+      if goal_fn.(current_state.value) do
         current_node
       else
         {frontier, explored} =
@@ -69,13 +69,13 @@ defmodule CCSP.Chapter2.GenericSearch do
             end
           end)
 
-        dfs(maze, frontier, explored, successors_fn)
+        dfs(maze, frontier, explored, goal_fn, successors_fn)
       end
     end
   end
 
-  @spec breadth_first_search(Maze.t(), MazeLocation.t(), MazeLocation.t(), any) :: Node.t()
-  def breadth_first_search(maze, initial, goal, successors_fn) do
+  @spec breadth_first_search(Maze.t(), MazeLocation.t(), MazeLocation.t(), any, any) :: Node.t()
+  def breadth_first_search(maze, initial, goal, goal_fn, successors_fn) do
     frontier =
       Queue.new()
       |> Queue.push(Node.new(initial, nil))
@@ -84,16 +84,16 @@ defmodule CCSP.Chapter2.GenericSearch do
       MapSet.new()
       |> MapSet.put(initial)
 
-    bfs(maze, frontier, explored, successors_fn)
+    bfs(maze, frontier, explored, goal_fn, successors_fn)
   end
 
-  @spec bfs(Maze.t(), Queue.t(), MapSet.t(), any) :: Node.t()
-  defp bfs(maze, frontier, explored, successors_fn) do
+  @spec bfs(Maze.t(), Queue.t(), MapSet.t(), any, any) :: Node.t()
+  defp bfs(maze, frontier, explored, goal_fn, successors_fn) do
     if Queue.empty?(frontier) == false do
       {current_node, frontier} = Queue.pop(frontier)
       current_state = current_node.state
 
-      if current_state.value == "G" do
+      if goal_fn.(current_state.value) do
         current_node
       else
         {frontier, explored} =
@@ -109,7 +109,7 @@ defmodule CCSP.Chapter2.GenericSearch do
             end
           end)
 
-        bfs(maze, frontier, explored, successors_fn)
+        bfs(maze, frontier, explored, goal_fn, successors_fn)
       end
     end
   end
