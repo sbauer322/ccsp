@@ -1,4 +1,5 @@
 defmodule CCSP.Chapter2.GenericSearch do
+  alias CCSP.Chapter2.PriorityQueue
   alias CCSP.Chapter2.Stack
   alias CCSP.Chapter2.Queue
   alias CCSP.Chapter2.Node
@@ -57,17 +58,19 @@ defmodule CCSP.Chapter2.GenericSearch do
         current_node
       else
         {frontier, explored} =
-          Enum.reduce(successors_fn.(maze, current_state), {frontier, explored}, fn child,
-                                                                                    {frontier,
-                                                                                     explored} ->
-            if Enum.member?(explored, child) == true do
-              {frontier, explored}
-            else
-              frontier = Stack.push(frontier, Node.new(child, current_node))
-              explored = MapSet.put(explored, child)
-              {frontier, explored}
+          Enum.reduce(
+            successors_fn.(maze, current_state),
+            {frontier, explored},
+            fn child, {frontier, explored} ->
+              if Enum.member?(explored, child) == true do
+                {frontier, explored}
+              else
+                frontier = Stack.push(frontier, Node.new(child, current_node))
+                explored = MapSet.put(explored, child)
+                {frontier, explored}
+              end
             end
-          end)
+          )
 
         dfs(maze, frontier, explored, goal_fn, successors_fn)
       end
@@ -97,19 +100,68 @@ defmodule CCSP.Chapter2.GenericSearch do
         current_node
       else
         {frontier, explored} =
-          Enum.reduce(successors_fn.(maze, current_state), {frontier, explored}, fn child,
-                                                                                    {frontier,
-                                                                                     explored} ->
-            if Enum.member?(explored, child) == true do
-              {frontier, explored}
-            else
-              frontier = Queue.push(frontier, Node.new(child, current_node))
-              explored = MapSet.put(explored, child)
-              {frontier, explored}
+          Enum.reduce(
+            successors_fn.(maze, current_state),
+            {frontier, explored},
+            fn child, {frontier, explored} ->
+              if Enum.member?(explored, child) == true do
+                {frontier, explored}
+              else
+                frontier = Queue.push(frontier, Node.new(child, current_node))
+                explored = MapSet.put(explored, child)
+                {frontier, explored}
+              end
             end
-          end)
+          )
 
         bfs(maze, frontier, explored, goal_fn, successors_fn)
+      end
+    end
+  end
+
+  def astar_search(maze, initial, goal_fn, successors_fn, heuristic_fn) do
+    frontier =
+      PriorityQueue.new()
+      |> PriorityQueue.push(Node.new(initial, nil, 0.0, heuristic_fn.(initial)))
+
+    explored =
+      Map.new()
+      |> Map.put(initial, 0.0)
+
+    astar(maze, frontier, explored, goal_fn, successors_fn, heuristic_fn)
+  end
+
+  defp astar(maze, frontier, explored, goal_fn, successors_fn, heuristic_fn) do
+    if PriorityQueue.empty?(frontier) == false do
+      {current_node, frontier} = PriorityQueue.pop(frontier)
+      current_state = current_node.state
+
+      if goal_fn.(current_state.value) do
+        current_node
+      else
+        {frontier, explored} =
+          Enum.reduce(
+            successors_fn.(maze, current_state),
+            {frontier, explored},
+            fn child, {frontier, explored} ->
+              new_cost = current_node.cost + 1
+
+              if Enum.member?(explored, child) or Map.get(explored, child) <= new_cost do
+                {frontier, explored}
+              else
+                frontier =
+                  PriorityQueue.push(
+                    frontier,
+                    Node.new(child, current_node, new_cost, heuristic_fn.(child))
+                  )
+
+                explored = Map.put(explored, child, new_cost)
+                {frontier, explored}
+              end
+            end
+          )
+
+        astar(maze, frontier, explored, goal_fn, successors_fn, heuristic_fn)
       end
     end
   end
