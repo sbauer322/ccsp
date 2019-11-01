@@ -119,6 +119,7 @@ defmodule CCSP.Chapter2.Maze do
     Enum.filter([west.(), east.(), north.(), south.()], &(&1 != nil))
   end
 
+  @spec manhattan_distance(MazeLocation.t()) :: (MazeLocation.t() -> non_neg_integer)
   def manhattan_distance(goal) do
     fn m1 ->
       x_distance = abs(m1.column - goal.column)

@@ -35,7 +35,12 @@ defmodule CCSP.Chapter2.GenericSearch do
     end
   end
 
-  @spec depth_first_search(Maze.t(), MazeLocation.t(), any, any) :: Node.t()
+  @spec depth_first_search(
+          Maze.t(),
+          MazeLocation.t(),
+          (any -> boolean),
+          (Maze.t(), MazeLocation.t() -> list(MazeLocation.t()))
+        ) :: Node.t()
   def depth_first_search(maze, initial, goal_fn, successors_fn) do
     frontier =
       Stack.new()
@@ -48,7 +53,13 @@ defmodule CCSP.Chapter2.GenericSearch do
     dfs(maze, frontier, explored, goal_fn, successors_fn)
   end
 
-  @spec dfs(Maze.t(), Stack.t(), MapSet.t(), any, any) :: Node.t()
+  @spec dfs(
+          Maze.t(),
+          Stack.t(),
+          MapSet.t(),
+          (any -> boolean),
+          (Maze.t(), MazeLocation.t() -> list(MazeLocation.t()))
+        ) :: Node.t()
   defp dfs(maze, frontier, explored, goal_fn, successors_fn) do
     if Stack.empty?(frontier) == false do
       {current_node, frontier} = Stack.pop(frontier)
@@ -77,7 +88,12 @@ defmodule CCSP.Chapter2.GenericSearch do
     end
   end
 
-  @spec breadth_first_search(Maze.t(), MazeLocation.t(), any, any) :: Node.t()
+  @spec breadth_first_search(
+          Maze.t(),
+          MazeLocation.t(),
+          (any -> boolean),
+          (Maze.t(), MazeLocation.t() -> list(MazeLocation.t()))
+        ) :: Node.t()
   def breadth_first_search(maze, initial, goal_fn, successors_fn) do
     frontier =
       Queue.new()
@@ -90,7 +106,13 @@ defmodule CCSP.Chapter2.GenericSearch do
     bfs(maze, frontier, explored, goal_fn, successors_fn)
   end
 
-  @spec bfs(Maze.t(), Queue.t(), MapSet.t(), any, any) :: Node.t()
+  @spec bfs(
+          Maze.t(),
+          Queue.t(),
+          MapSet.t(),
+          (any -> boolean),
+          (Maze.t(), MazeLocation.t() -> list(MazeLocation.t()))
+        ) :: Node.t()
   defp bfs(maze, frontier, explored, goal_fn, successors_fn) do
     if Queue.empty?(frontier) == false do
       {current_node, frontier} = Queue.pop(frontier)
@@ -119,6 +141,14 @@ defmodule CCSP.Chapter2.GenericSearch do
     end
   end
 
+  @spec astar_search(
+          a,
+          b,
+          (any -> boolean),
+          (a, b -> list(b)),
+          (b -> non_neg_integer)
+        ) :: Node.t()
+        when a: var, b: var
   def astar_search(maze, initial, goal_fn, successors_fn, heuristic_fn) do
     frontier =
       PriorityQueue.new()
@@ -131,6 +161,15 @@ defmodule CCSP.Chapter2.GenericSearch do
     astar(maze, frontier, explored, goal_fn, successors_fn, heuristic_fn)
   end
 
+  #  Dialyzer really dislikes this spec and its permutations and claims the function has no local return. I am unsure of what it has a problem with specifically.
+  #  @spec astar(
+  #          a,
+  #          PriorityQueue.t(Node.t()),
+  #          map,
+  #          (any -> boolean),
+  #          (a, b -> list(b)),
+  #          (b -> non_neg_integer)
+  #        ) :: Node.t() when a: var, b: var
   defp astar(maze, frontier, explored, goal_fn, successors_fn, heuristic_fn) do
     if PriorityQueue.empty?(frontier) == false do
       {current_node, frontier} = PriorityQueue.pop(frontier)

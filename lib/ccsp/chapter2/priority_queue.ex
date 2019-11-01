@@ -10,16 +10,16 @@ defmodule CCSP.Chapter2.PriorityQueue do
   For the sake of effeciency, we lazily order the list... in particular, only when pop is called.
   """
 
-  @opaque t :: __MODULE__.t()
+  @opaque t(term) :: __MODULE__.t(term)
 
   defstruct list: []
 
-  @spec new(list(Node.t())) :: t
+  @spec new(list(Node.t())) :: t(Node.t())
   def new(list \\ []) do
     %T{list: list}
   end
 
-  @spec pop(t) :: {Node.t(), t}
+  @spec pop(t(Node.t())) :: {Node.t(), t(Node.t())}
   def pop(queue) do
     cond do
       empty?(queue) ->
@@ -34,12 +34,12 @@ defmodule CCSP.Chapter2.PriorityQueue do
     end
   end
 
-  @spec push(t, Node.t()) :: t
+  @spec push(t(Node.t()), Node.t()) :: t(Node.t())
   def push(queue, element) do
     %T{list: [element | queue.list]}
   end
 
-  @spec empty?(t) :: boolean
+  @spec empty?(t(Node.t())) :: boolean
   def empty?(queue) do
     Enum.empty?(queue.list)
   end
