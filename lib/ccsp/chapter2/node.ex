@@ -14,8 +14,8 @@ defmodule CCSP.Chapter2.Node do
     %T{state: state, parent: parent, cost: cost, heuristic: heuristic}
   end
 
-  @spec lt(t, t) :: boolean
-  def lt(left, right) do
+  @spec total_cost(t, t) :: boolean
+  def total_cost(left, right) do
     left.cost + left.heuristic < right.cost + right.heuristic
   end
 end

@@ -12,9 +12,10 @@ defmodule CCSP.Start do
     maze = Maze.init(rows, columns, 0.2, {0, 0}, {rows, columns})
     start = Maze.get_cell(maze, 0, 0)
     goal = Maze.get_cell(maze, rows, columns)
+    goal_fn = fn location -> "G" == location.value end
 
     path =
-      GenericSearch.depth_first_search(maze, start, goal, &Maze.successors/2)
+      GenericSearch.depth_first_search(maze, start, goal_fn, &Maze.successors/2)
       |> GenericSearch.node_to_path()
 
     Maze.mark(maze, path, start, goal)
@@ -27,9 +28,32 @@ defmodule CCSP.Start do
     maze = Maze.init(rows, columns, 0.2, {0, 0}, {rows, columns})
     start = Maze.get_cell(maze, 0, 0)
     goal = Maze.get_cell(maze, rows, columns)
+    goal_fn = fn location -> "G" == location.value end
 
     path =
-      GenericSearch.breadth_first_search(maze, start, goal, &Maze.successors/2)
+      GenericSearch.breadth_first_search(maze, start, goal_fn, &Maze.successors/2)
+      |> GenericSearch.node_to_path()
+
+    Maze.mark(maze, path, start, goal)
+    |> Maze.pretty_print()
+  end
+
+  def run_astar_maze_solving do
+    rows = 9
+    columns = 9
+    maze = Maze.init(rows, columns, 0.2, {0, 0}, {rows, columns})
+    start = Maze.get_cell(maze, 0, 0)
+    goal = Maze.get_cell(maze, rows, columns)
+    goal_fn = fn location -> "G" == location.value end
+
+    path =
+      GenericSearch.astar_search(
+        maze,
+        start,
+        goal_fn,
+        &Maze.successors/2,
+        Maze.manhattan_distance(goal)
+      )
       |> GenericSearch.node_to_path()
 
     Maze.mark(maze, path, start, goal)

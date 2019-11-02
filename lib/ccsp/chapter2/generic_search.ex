@@ -1,9 +1,8 @@
 defmodule CCSP.Chapter2.GenericSearch do
+  alias CCSP.Chapter2.PriorityQueue
   alias CCSP.Chapter2.Stack
   alias CCSP.Chapter2.Queue
   alias CCSP.Chapter2.Node
-  alias CCSP.Chapter2.Maze
-  alias CCSP.Chapter2.MazeLocation
 
   @moduledoc """
   Corresponds to CCSP in Python, Section 2.2 titled "Maze Solving"
@@ -34,8 +33,14 @@ defmodule CCSP.Chapter2.GenericSearch do
     end
   end
 
-  @spec depth_first_search(Maze.t(), MazeLocation.t(), MazeLocation.t(), any) :: Node.t()
-  def depth_first_search(maze, initial, goal, successors_fn) do
+  @spec depth_first_search(
+          a,
+          b,
+          (b -> boolean),
+          (a, b -> list(b))
+        ) :: Node.t()
+        when a: var, b: var
+  def depth_first_search(maze, initial, goal_fn, successors_fn) do
     frontier =
       Stack.new()
       |> Stack.push(Node.new(initial, nil))
@@ -44,38 +49,53 @@ defmodule CCSP.Chapter2.GenericSearch do
       MapSet.new()
       |> MapSet.put(initial)
 
-    dfs(maze, frontier, explored, successors_fn)
+    dfs(maze, frontier, explored, goal_fn, successors_fn)
   end
 
-  @spec dfs(Maze.t(), Stack.t(), MapSet.t(), any) :: Node.t()
-  defp dfs(maze, frontier, explored, successors_fn) do
+  @spec dfs(
+          a,
+          Stack.t(),
+          MapSet.t(),
+          (b -> boolean),
+          (a, b -> list(b))
+        ) :: Node.t()
+        when a: var, b: var
+  defp dfs(maze, frontier, explored, goal_fn, successors_fn) do
     if Stack.empty?(frontier) == false do
       {current_node, frontier} = Stack.pop(frontier)
       current_state = current_node.state
 
-      if current_state.value == "G" do
+      if goal_fn.(current_state) do
         current_node
       else
         {frontier, explored} =
-          Enum.reduce(successors_fn.(maze, current_state), {frontier, explored}, fn child,
-                                                                                    {frontier,
-                                                                                     explored} ->
-            if Enum.member?(explored, child) == true do
-              {frontier, explored}
-            else
-              frontier = Stack.push(frontier, Node.new(child, current_node))
-              explored = MapSet.put(explored, child)
-              {frontier, explored}
+          Enum.reduce(
+            successors_fn.(maze, current_state),
+            {frontier, explored},
+            fn child, {frontier, explored} ->
+              if Enum.member?(explored, child) == true do
+                {frontier, explored}
+              else
+                frontier = Stack.push(frontier, Node.new(child, current_node))
+                explored = MapSet.put(explored, child)
+                {frontier, explored}
+              end
             end
-          end)
+          )
 
-        dfs(maze, frontier, explored, successors_fn)
+        dfs(maze, frontier, explored, goal_fn, successors_fn)
       end
     end
   end
 
-  @spec breadth_first_search(Maze.t(), MazeLocation.t(), MazeLocation.t(), any) :: Node.t()
-  def breadth_first_search(maze, initial, goal, successors_fn) do
+  @spec breadth_first_search(
+          a,
+          b,
+          (b -> boolean),
+          (a, b -> list(b))
+        ) :: Node.t()
+        when a: var, b: var
+  def breadth_first_search(maze, initial, goal_fn, successors_fn) do
     frontier =
       Queue.new()
       |> Queue.push(Node.new(initial, nil))
@@ -84,32 +104,105 @@ defmodule CCSP.Chapter2.GenericSearch do
       MapSet.new()
       |> MapSet.put(initial)
 
-    bfs(maze, frontier, explored, successors_fn)
+    bfs(maze, frontier, explored, goal_fn, successors_fn)
   end
 
-  @spec bfs(Maze.t(), Queue.t(), MapSet.t(), any) :: Node.t()
-  defp bfs(maze, frontier, explored, successors_fn) do
+  @spec bfs(
+          a,
+          Queue.t(),
+          MapSet.t(),
+          (b -> boolean),
+          (a, b -> list(b))
+        ) :: Node.t()
+        when a: var, b: var
+  defp bfs(maze, frontier, explored, goal_fn, successors_fn) do
     if Queue.empty?(frontier) == false do
       {current_node, frontier} = Queue.pop(frontier)
       current_state = current_node.state
 
-      if current_state.value == "G" do
+      if goal_fn.(current_state) do
         current_node
       else
         {frontier, explored} =
-          Enum.reduce(successors_fn.(maze, current_state), {frontier, explored}, fn child,
-                                                                                    {frontier,
-                                                                                     explored} ->
-            if Enum.member?(explored, child) == true do
-              {frontier, explored}
-            else
-              frontier = Queue.push(frontier, Node.new(child, current_node))
-              explored = MapSet.put(explored, child)
-              {frontier, explored}
+          Enum.reduce(
+            successors_fn.(maze, current_state),
+            {frontier, explored},
+            fn child, {frontier, explored} ->
+              if Enum.member?(explored, child) == true do
+                {frontier, explored}
+              else
+                frontier = Queue.push(frontier, Node.new(child, current_node))
+                explored = MapSet.put(explored, child)
+                {frontier, explored}
+              end
             end
-          end)
+          )
 
-        bfs(maze, frontier, explored, successors_fn)
+        bfs(maze, frontier, explored, goal_fn, successors_fn)
+      end
+    end
+  end
+
+  @spec astar_search(
+          a,
+          b,
+          (b -> boolean),
+          (a, b -> list(b)),
+          (b -> non_neg_integer)
+        ) :: Node.t()
+        when a: var, b: var
+  def astar_search(maze, initial, goal_fn, successors_fn, heuristic_fn) do
+    frontier =
+      PriorityQueue.new()
+      |> PriorityQueue.push(Node.new(initial, nil, 0.0, heuristic_fn.(initial)))
+
+    explored =
+      Map.new()
+      |> Map.put(initial, 0.0)
+
+    astar(maze, frontier, explored, goal_fn, successors_fn, heuristic_fn)
+  end
+
+  #  Dialyzer really dislikes this spec and its permutations and claims the function has no local return. I am unsure of what it has a problem with specifically.
+  #  @spec astar(
+  #          a,
+  #          PriorityQueue.t(Node.t()),
+  #          map,
+  #          (b -> boolean),
+  #          (a, b -> list(b)),
+  #          (b -> non_neg_integer)
+  #        ) :: Node.t() when a: var, b: var
+  defp astar(maze, frontier, explored, goal_fn, successors_fn, heuristic_fn) do
+    if PriorityQueue.empty?(frontier) == false do
+      {current_node, frontier} = PriorityQueue.pop(frontier)
+      current_state = current_node.state
+
+      if goal_fn.(current_state) do
+        current_node
+      else
+        {frontier, explored} =
+          Enum.reduce(
+            successors_fn.(maze, current_state),
+            {frontier, explored},
+            fn child, {frontier, explored} ->
+              new_cost = current_node.cost + 1
+
+              if Enum.member?(explored, child) or Map.get(explored, child) <= new_cost do
+                {frontier, explored}
+              else
+                frontier =
+                  PriorityQueue.push(
+                    frontier,
+                    Node.new(child, current_node, new_cost, heuristic_fn.(child))
+                  )
+
+                explored = Map.put(explored, child, new_cost)
+                {frontier, explored}
+              end
+            end
+          )
+
+        astar(maze, frontier, explored, goal_fn, successors_fn, heuristic_fn)
       end
     end
   end

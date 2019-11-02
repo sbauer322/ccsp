@@ -5,6 +5,8 @@ defmodule CCSP.Chapter2.Maze do
 
   @moduledoc """
   Corresponds to CCSP in Python, Section 2.2 titled "Maze Solving"
+
+  TODO: The constant use of `get_cell` causes heavy use of `List.slice` internally and does not scale well.
   """
 
   @type location :: {non_neg_integer, non_neg_integer}
@@ -47,8 +49,8 @@ defmodule CCSP.Chapter2.Maze do
   @spec get_cell(t, integer, integer) :: MazeLocation.t()
   def get_cell(maze, row, column) do
     maze.state
-    |> Enum.at(row)
-    |> Enum.at(column)
+    |> Enum.at(row, [])
+    |> Enum.at(column, nil)
   end
 
   @spec empty_maze(integer, integer) :: maze_state
@@ -82,27 +84,48 @@ defmodule CCSP.Chapter2.Maze do
     total_rows = maze.total_rows
     total_columns = maze.total_columns
 
-    south =
-      if row + 1 < total_rows and get_cell(maze, row + 1, column).value != cell("BLOCKED") do
-        get_cell(maze, row + 1, column)
-      end
+    south = fn ->
+      neighbor_cell = get_cell(maze, row + 1, column)
 
-    north =
-      if row - 1 >= 0 and get_cell(maze, row - 1, column).value != cell("BLOCKED") do
-        get_cell(maze, row - 1, column)
+      if row + 1 < total_rows and neighbor_cell.value != cell("BLOCKED") do
+        neighbor_cell
       end
+    end
 
-    east =
-      if column + 1 < total_columns and get_cell(maze, row, column + 1).value != cell("BLOCKED") do
-        get_cell(maze, row, column + 1)
+    north = fn ->
+      neighbor_cell = get_cell(maze, row - 1, column)
+
+      if row - 1 >= 0 and neighbor_cell.value != cell("BLOCKED") do
+        neighbor_cell
       end
+    end
 
-    west =
-      if column - 1 >= 0 and get_cell(maze, row, column - 1).value != cell("BLOCKED") do
-        get_cell(maze, row, column - 1)
+    east = fn ->
+      neighbor_cell = get_cell(maze, row, column + 1)
+
+      if column + 1 < total_columns and neighbor_cell.value != cell("BLOCKED") do
+        neighbor_cell
       end
+    end
 
-    Enum.filter([west, east, north, south], &(&1 != nil))
+    west = fn ->
+      neighbor_cell = get_cell(maze, row, column - 1)
+
+      if column - 1 >= 0 and neighbor_cell.value != cell("BLOCKED") do
+        neighbor_cell
+      end
+    end
+
+    Enum.filter([west.(), east.(), north.(), south.()], &(&1 != nil))
+  end
+
+  @spec manhattan_distance(MazeLocation.t()) :: (MazeLocation.t() -> non_neg_integer)
+  def manhattan_distance(goal) do
+    fn m1 ->
+      x_distance = abs(m1.column - goal.column)
+      y_distance = abs(m1.row - goal.row)
+      x_distance + y_distance
+    end
   end
 
   @spec pretty_print(list(list(String.t()))) :: :ok
