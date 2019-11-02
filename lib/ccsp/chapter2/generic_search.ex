@@ -3,8 +3,6 @@ defmodule CCSP.Chapter2.GenericSearch do
   alias CCSP.Chapter2.Stack
   alias CCSP.Chapter2.Queue
   alias CCSP.Chapter2.Node
-  alias CCSP.Chapter2.Maze
-  alias CCSP.Chapter2.MazeLocation
 
   @moduledoc """
   Corresponds to CCSP in Python, Section 2.2 titled "Maze Solving"
@@ -36,11 +34,12 @@ defmodule CCSP.Chapter2.GenericSearch do
   end
 
   @spec depth_first_search(
-          Maze.t(),
-          MazeLocation.t(),
+          a,
+          b,
           (any -> boolean),
-          (Maze.t(), MazeLocation.t() -> list(MazeLocation.t()))
+          (a, b -> list(b))
         ) :: Node.t()
+        when a: var, b: var
   def depth_first_search(maze, initial, goal_fn, successors_fn) do
     frontier =
       Stack.new()
@@ -54,12 +53,13 @@ defmodule CCSP.Chapter2.GenericSearch do
   end
 
   @spec dfs(
-          Maze.t(),
+          a,
           Stack.t(),
           MapSet.t(),
           (any -> boolean),
-          (Maze.t(), MazeLocation.t() -> list(MazeLocation.t()))
+          (a, b -> list(b))
         ) :: Node.t()
+        when a: var, b: var
   defp dfs(maze, frontier, explored, goal_fn, successors_fn) do
     if Stack.empty?(frontier) == false do
       {current_node, frontier} = Stack.pop(frontier)
@@ -89,11 +89,12 @@ defmodule CCSP.Chapter2.GenericSearch do
   end
 
   @spec breadth_first_search(
-          Maze.t(),
-          MazeLocation.t(),
+          a,
+          b,
           (any -> boolean),
-          (Maze.t(), MazeLocation.t() -> list(MazeLocation.t()))
+          (a, b -> list(b))
         ) :: Node.t()
+        when a: var, b: var
   def breadth_first_search(maze, initial, goal_fn, successors_fn) do
     frontier =
       Queue.new()
@@ -107,12 +108,13 @@ defmodule CCSP.Chapter2.GenericSearch do
   end
 
   @spec bfs(
-          Maze.t(),
+          a,
           Queue.t(),
           MapSet.t(),
           (any -> boolean),
-          (Maze.t(), MazeLocation.t() -> list(MazeLocation.t()))
+          (a, b -> list(b))
         ) :: Node.t()
+        when a: var, b: var
   defp bfs(maze, frontier, explored, goal_fn, successors_fn) do
     if Queue.empty?(frontier) == false do
       {current_node, frontier} = Queue.pop(frontier)

@@ -5,9 +5,9 @@ defmodule CCSP.Chapter2.PriorityQueue do
   @moduledoc """
   Corresponds to CCSP in Python, Section 2.2 titled "Maze Solving"
 
-  List based priority queue using Node structs.
+  List based priority queue using Node structs. We rely on the heuristic field from the node to determine priority. This can be made more generic in the future, if needed.
 
-  For the sake of effeciency, we lazily order the list... in particular, only when pop is called.
+  For the sake of efficiency, we lazily order the list... in particular, only when pop is called.
   """
 
   @opaque t(term) :: __MODULE__.t(term)
