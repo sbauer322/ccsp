@@ -4,9 +4,9 @@ defmodule CCSP.Chapter1.Fib do
   """
 
   # Infinite recursion example
-  def fib1(n) do
-    fib1(n - 1) + fib1(n - 2)
-  end
+  #  def fib1(n) do
+  #    fib1(n - 1) + fib1(n - 2)
+  #  end
 
   @spec fib2(integer) :: integer
   def fib2(n) when n < 2, do: n
