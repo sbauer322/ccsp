@@ -12,7 +12,7 @@ defmodule CCSP.Start do
     maze = Maze.init(rows, columns, 0.2, {0, 0}, {rows, columns})
     start = Maze.get_cell(maze, 0, 0)
     goal = Maze.get_cell(maze, rows, columns)
-    goal_fn = fn value -> "G" == value end
+    goal_fn = fn location -> "G" == location.value end
 
     path =
       GenericSearch.depth_first_search(maze, start, goal_fn, &Maze.successors/2)
@@ -28,7 +28,7 @@ defmodule CCSP.Start do
     maze = Maze.init(rows, columns, 0.2, {0, 0}, {rows, columns})
     start = Maze.get_cell(maze, 0, 0)
     goal = Maze.get_cell(maze, rows, columns)
-    goal_fn = fn value -> "G" == value end
+    goal_fn = fn location -> "G" == location.value end
 
     path =
       GenericSearch.breadth_first_search(maze, start, goal_fn, &Maze.successors/2)
@@ -44,7 +44,7 @@ defmodule CCSP.Start do
     maze = Maze.init(rows, columns, 0.2, {0, 0}, {rows, columns})
     start = Maze.get_cell(maze, 0, 0)
     goal = Maze.get_cell(maze, rows, columns)
-    goal_fn = fn value -> "G" == value end
+    goal_fn = fn location -> "G" == location.value end
 
     path =
       GenericSearch.astar_search(

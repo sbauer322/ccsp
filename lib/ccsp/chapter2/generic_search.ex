@@ -36,7 +36,7 @@ defmodule CCSP.Chapter2.GenericSearch do
   @spec depth_first_search(
           a,
           b,
-          (any -> boolean),
+          (b -> boolean),
           (a, b -> list(b))
         ) :: Node.t()
         when a: var, b: var
@@ -56,7 +56,7 @@ defmodule CCSP.Chapter2.GenericSearch do
           a,
           Stack.t(),
           MapSet.t(),
-          (any -> boolean),
+          (b -> boolean),
           (a, b -> list(b))
         ) :: Node.t()
         when a: var, b: var
@@ -65,7 +65,7 @@ defmodule CCSP.Chapter2.GenericSearch do
       {current_node, frontier} = Stack.pop(frontier)
       current_state = current_node.state
 
-      if goal_fn.(current_state.value) do
+      if goal_fn.(current_state) do
         current_node
       else
         {frontier, explored} =
@@ -91,7 +91,7 @@ defmodule CCSP.Chapter2.GenericSearch do
   @spec breadth_first_search(
           a,
           b,
-          (any -> boolean),
+          (b -> boolean),
           (a, b -> list(b))
         ) :: Node.t()
         when a: var, b: var
@@ -111,7 +111,7 @@ defmodule CCSP.Chapter2.GenericSearch do
           a,
           Queue.t(),
           MapSet.t(),
-          (any -> boolean),
+          (b -> boolean),
           (a, b -> list(b))
         ) :: Node.t()
         when a: var, b: var
@@ -120,7 +120,7 @@ defmodule CCSP.Chapter2.GenericSearch do
       {current_node, frontier} = Queue.pop(frontier)
       current_state = current_node.state
 
-      if goal_fn.(current_state.value) do
+      if goal_fn.(current_state) do
         current_node
       else
         {frontier, explored} =
@@ -146,7 +146,7 @@ defmodule CCSP.Chapter2.GenericSearch do
   @spec astar_search(
           a,
           b,
-          (any -> boolean),
+          (b -> boolean),
           (a, b -> list(b)),
           (b -> non_neg_integer)
         ) :: Node.t()
@@ -168,7 +168,7 @@ defmodule CCSP.Chapter2.GenericSearch do
   #          a,
   #          PriorityQueue.t(Node.t()),
   #          map,
-  #          (any -> boolean),
+  #          (b -> boolean),
   #          (a, b -> list(b)),
   #          (b -> non_neg_integer)
   #        ) :: Node.t() when a: var, b: var
@@ -177,7 +177,7 @@ defmodule CCSP.Chapter2.GenericSearch do
       {current_node, frontier} = PriorityQueue.pop(frontier)
       current_state = current_node.state
 
-      if goal_fn.(current_state.value) do
+      if goal_fn.(current_state) do
         current_node
       else
         {frontier, explored} =
