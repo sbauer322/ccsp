@@ -128,15 +128,15 @@ defmodule CCSP.Chapter2.Maze do
     end
   end
 
-  @spec pretty_print(list(list(String.t()))) :: :ok
-  def pretty_print(maze) do
-    Enum.each(maze, fn row ->
+  @spec pretty_print(list(list(maze_state))) :: :ok
+  def pretty_print(maze_state) do
+    Enum.each(maze_state, fn row ->
       Enum.each(row, &IO.write(" #{&1.value} "))
       IO.puts("")
     end)
   end
 
-  @spec mark(t, list(Node.t()), MazeLocation.t(), MazeLocation.t()) :: list(list(String.t()))
+  @spec mark(t, list(Node.t()), MazeLocation.t(), MazeLocation.t()) :: list(list(maze_state))
   def mark(maze, path, start, goal) do
     Enum.reduce(path, maze.state, fn n, acc ->
       List.update_at(
