@@ -53,27 +53,34 @@ defmodule CCSP.Chapter3.CSP do
     |> Enum.all?(fn constraint -> Constraint.satisfied?(constraint, assignment) end)
   end
 
+  def next_candidate(csp, assignment) do
+    [first | _] = Enum.filter(csp.variables, fn v -> not Map.has_key?(assignment, v) end)
+    first
+  end
+
   @spec backtracking_search(t, %{v => d}) :: %{v => d} | nil
   def backtracking_search(csp, assignment \\ %{}) do
     if map_size(assignment) == length(csp.variables) do
-      assignment
+      {:ok, assignment}
     else
-      unassigned = Enum.filter(csp.variables, fn v -> not Map.has_key?(assignment, v) end)
-      [first | _] = unassigned
+      first = next_candidate(csp, assignment)
 
       Map.get(csp.domains, first)
-      |> Enum.reduce(assignment, fn value, acc ->
+      |> Enum.reduce_while(nil, fn value, acc ->
         local_assignment = Map.put(assignment, first, value)
 
         if consistent?(csp, first, local_assignment) do
-          result = backtracking_search(csp, local_assignment)
+          results = backtracking_search(csp, local_assignment)
 
-          if result != nil do
-            result
+          if is_tuple(results) do
+            {:halt, results}
           end
-        else
-          acc
         end
+        |> (&(if is_tuple(&1) do
+                &1
+              else
+                {:cont, nil}
+              end)).()
       end)
     end
   end
