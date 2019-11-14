@@ -8,6 +8,6 @@ defmodule Main do
   """
 
   def run() do
-    Start3.run_queens()
+    Start3.run_send_more_money()
   end
 end

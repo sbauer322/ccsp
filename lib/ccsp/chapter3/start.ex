@@ -4,6 +4,7 @@ defmodule CCSP.Chapter3.Start do
   alias CCSP.Chapter3.MapColoringConstraint
   alias CCSP.Chapter3.WordSearch
   alias CCSP.Chapter3.WordSearchConstraint
+  alias CCSP.Chapter3.SendMoreMoneyConstraint
 
   @moduledoc """
   Convenience module to for setting up and running more elaborate sections.
@@ -106,5 +107,22 @@ defmodule CCSP.Chapter3.Start do
       end)
       |> WordSearch.display_grid()
     end
+  end
+
+  def run_send_more_money() do
+    letters = ["S", "E", "N", "D", "M", "O", "R", "Y"]
+    possible_digits = Enum.reduce(letters, %{}, fn letter, acc ->
+      Map.put(acc, letter, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    end)
+    possible_digits = Map.put(possible_digits, "M", [1])
+
+    CSP.new(letters, possible_digits)
+    |> CSP.add_constraint(SendMoreMoneyConstraint.new(letters))
+    |> CSP.backtracking_search()
+    |> (&(if nil == &1 do
+         {:error, "No solution found."}
+       else
+         &1
+       end)).()
   end
 end
