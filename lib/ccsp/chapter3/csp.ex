@@ -58,7 +58,8 @@ defmodule CCSP.Chapter3.CSP do
     first
   end
 
-  @spec backtracking_search(t, %{v => d}) :: %{v => d} | nil
+  # Had a terrible time translating this function. There might be a simpler way still.
+  @spec backtracking_search(t, %{v => d}) :: {atom, %{v => d}} | nil
   def backtracking_search(csp, assignment \\ %{}) do
     if map_size(assignment) == length(csp.variables) do
       {:ok, assignment}
@@ -66,7 +67,7 @@ defmodule CCSP.Chapter3.CSP do
       first = next_candidate(csp, assignment)
 
       Map.get(csp.domains, first)
-      |> Enum.reduce_while(nil, fn value, acc ->
+      |> Enum.reduce_while(nil, fn value, _ ->
         local_assignment = Map.put(assignment, first, value)
 
         if consistent?(csp, first, local_assignment) do

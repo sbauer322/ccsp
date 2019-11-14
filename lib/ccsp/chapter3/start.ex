@@ -2,6 +2,8 @@ defmodule CCSP.Chapter3.Start do
   alias CCSP.Chapter3.CSP
   alias CCSP.Chapter3.QueensConstraint
   alias CCSP.Chapter3.MapColoringConstraint
+  alias CCSP.Chapter3.WordSearch
+  alias CCSP.Chapter3.WordSearchConstraint
 
   @moduledoc """
   Convenience module to for setting up and running more elaborate sections.
@@ -60,5 +62,49 @@ defmodule CCSP.Chapter3.Start do
           else
             &1
           end)).()
+  end
+
+  def run_word_search() do
+    grid = WordSearch.generate_grid(9,9)
+    words = ["MATTHEW", "JOE", "MARY", "SARAH", "SALLY"]
+
+    locations =
+      Enum.reduce(words, %{}, fn word, acc ->
+        Map.put(acc, word, WordSearch.generate_domain(word, grid))
+      end)
+
+    solution =
+      CSP.new(words, locations)
+      |> CSP.add_constraint(WordSearchConstraint.new(words))
+      |> CSP.backtracking_search()
+
+    if nil == solution do
+      {:error, "No solution found."}
+    else
+      {:ok, solution} = solution
+
+      Enum.reduce(Map.to_list(solution), grid, fn {word, grid_locations}, acc ->
+        # randomly reverse half the time
+        # Enum.reverse(grid_locations)
+
+        indexed_letters = Enum.zip(0..String.length(word), String.graphemes(word))
+
+        Enum.reduce(indexed_letters, acc, fn {index, letter}, acc ->
+          {row, column} =
+            {Enum.at(grid_locations, index).row, Enum.at(grid_locations, index).column}
+
+          List.update_at(
+            acc,
+            row,
+            &List.update_at(
+              &1,
+              column,
+              fn _ -> letter end
+            )
+          )
+        end)
+      end)
+      |> WordSearch.display_grid()
+    end
   end
 end
