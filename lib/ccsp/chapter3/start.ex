@@ -66,7 +66,7 @@ defmodule CCSP.Chapter3.Start do
   end
 
   def run_word_search() do
-    grid = WordSearch.generate_grid(9,9)
+    grid = WordSearch.generate_grid(9, 9)
     words = ["MATTHEW", "JOE", "MARY", "SARAH", "SALLY"]
 
     locations =
