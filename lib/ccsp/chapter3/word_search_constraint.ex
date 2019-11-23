@@ -4,10 +4,10 @@ defmodule CCSP.Chapter3.WordSearchConstraint do
   @moduledoc false
 
   # TODO: way to abstract variables into protocol?
-  defstruct variables: [], words: []
+  defstruct variables: []
 
   def new(words) do
-    %T{variables: words, words: words}
+    %T{variables: words}
   end
 end
 

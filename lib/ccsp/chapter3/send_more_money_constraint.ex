@@ -4,13 +4,23 @@ defmodule CCSP.Chapter3.SendMoreMoneyConstraint do
   @moduledoc false
 
   # TODO: way to abstract variables into protocol?
-  defstruct variables: [], letters: []
+  defstruct variables: []
 
   def new(letters) do
-    %T{variables: letters, letters: letters}
+    %T{variables: letters}
+  end
+end
+
+defimpl CCSP.Chapter3.Constraint, for: CCSP.Chapter3.SendMoreMoneyConstraint do
+  def satisfied?(constraint, assignment) do
+    cond do
+      MapSet.size(MapSet.new(Map.values(assignment))) < map_size(assignment) -> false
+      map_size(assignment) == length(constraint.variables) -> check_variables(assignment)
+      true -> true
+    end
   end
 
-  def check_variables(assignment) do
+  defp check_variables(assignment) do
     s = Map.get(assignment, "S")
     e = Map.get(assignment, "E")
     n = Map.get(assignment, "N")
@@ -24,17 +34,5 @@ defmodule CCSP.Chapter3.SendMoreMoneyConstraint do
     money = m * 10_000 + o * 1_000 + n * 100 + e * 10 + y
 
     send + more == money
-  end
-end
-
-defimpl CCSP.Chapter3.Constraint, for: CCSP.Chapter3.SendMoreMoneyConstraint do
-  alias CCSP.Chapter3.SendMoreMoneyConstraint
-
-  def satisfied?(constraint, assignment) do
-    cond do
-      MapSet.size(MapSet.new(Map.values(assignment))) < map_size(assignment) -> false
-      map_size(assignment) == length(constraint.letters) -> SendMoreMoneyConstraint.check_variables(assignment)
-      true -> true
-    end
   end
 end
