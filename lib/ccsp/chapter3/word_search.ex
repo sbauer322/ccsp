@@ -61,50 +61,58 @@ defmodule CCSP.Chapter3.WordSearch do
           non_neg_integer
         ) :: list(list(GridLocation.t()))
   def potential_locations(acc, row, col, rows, columns, width, height, length) do
+    # We leverage the `with`s and how they short circuit to progressively build up the `locations`.
     locations = acc
 
     locations =
-      if col + length <= width do
-        # left to right
-        left_to_right =
-          Enum.map(columns, fn c ->
-            GridLocation.new(row, c)
-          end)
-          |> (&[&1 | locations]).()
-
-        # diagonal towards bottom right
-        if row + length <= height do
-          Enum.map(rows, fn r ->
-            GridLocation.new(r, col + (r - row))
-          end)
-          |> (&[&1 | left_to_right]).()
-        else
-          left_to_right
-        end
-      else
+      with true <- col + length <= width,
+           locations <- left_to_right(columns, row, locations),
+           true <- row + length <= height,
+           locations <- diagonal_towards_bottom_right(rows, col, row, locations) do
         locations
+      else
+        _ -> locations
       end
 
-
-      if row + length <= height do
-        # top to bottom
-        top_to_bottom =
-          Enum.map(rows, fn r ->
-            GridLocation.new(r, col)
-          end)
-          |> (&[&1 | locations]).()
-
-        if col - length >= 0 do
-          Enum.map(rows, fn r ->
-            GridLocation.new(r, col - (r - row))
-          end)
-          |> (&[&1 | top_to_bottom]).()
-        else
-          top_to_bottom
-        end
-      else
+    locations =
+      with true <- row + length <= height,
+           locations <- top_to_bottom(rows, col, locations),
+           true <- col - length >= 0,
+           locations <- diagonal_towards_bottom_left(rows, col, row, locations) do
         locations
+      else
+        _ -> locations
       end
+
+    locations
+  end
+
+  defp left_to_right(columns, row, locations) do
+    Enum.map(columns, fn c ->
+      GridLocation.new(row, c)
+    end)
+    |> (&[&1 | locations]).()
+  end
+
+  defp diagonal_towards_bottom_right(rows, col, row, locations) do
+    Enum.map(rows, fn r ->
+      GridLocation.new(r, col + (r - row))
+    end)
+    |> (&[&1 | locations]).()
+  end
+
+  defp top_to_bottom(rows, col, locations) do
+    Enum.map(rows, fn r ->
+      GridLocation.new(r, col)
+    end)
+    |> (&[&1 | locations]).()
+  end
+
+  defp diagonal_towards_bottom_left(rows, col, row, locations) do
+    Enum.map(rows, fn r ->
+      GridLocation.new(r, col - (r - row))
+    end)
+    |> (&[&1 | locations]).()
   end
 
   @spec display_grid(grid) :: :ok
