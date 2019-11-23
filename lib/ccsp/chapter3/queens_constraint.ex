@@ -12,7 +12,6 @@ defmodule CCSP.Chapter3.QueensConstraint do
 end
 
 defimpl CCSP.Chapter3.Constraint, for: CCSP.Chapter3.QueensConstraint do
-
   def satisfied?(constraint, assignment) do
     # q1c = queen 1 column, q1r = queen 1 row
     Enum.all?(Map.to_list(assignment), fn {q1c, q1r} ->

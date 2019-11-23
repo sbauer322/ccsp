@@ -61,7 +61,8 @@ defmodule CCSP.Chapter3.CSP do
   @spec backtracking_search(t, %{v => d}) :: {atom, %{v => d}} | nil
   def backtracking_search(csp, assignment \\ %{})
 
-  def backtracking_search(%T{variables: variables} = _csp, assignment) when map_size(assignment) == length(variables) do
+  def backtracking_search(%T{variables: variables} = _csp, assignment)
+      when map_size(assignment) == length(variables) do
     {:ok, assignment}
   end
 
@@ -73,8 +74,7 @@ defmodule CCSP.Chapter3.CSP do
       with local_assignment <- Map.put(assignment, first, value),
            true <- consistent?(csp, first, local_assignment),
            results <- backtracking_search(csp, local_assignment),
-           true <- is_tuple(results)
-      do
+           true <- is_tuple(results) do
         results
       else
         _ -> nil
