@@ -9,6 +9,7 @@ defmodule CCSP.Chapter2.MazeLocation do
 
   defstruct value: nil, row: nil, column: nil
 
+  @spec new(String.t(), non_neg_integer, non_neg_integer) :: t
   def new(value, row, column) do
     %T{value: value, row: row, column: column}
   end
