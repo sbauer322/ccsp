@@ -15,9 +15,9 @@ defmodule CCSP.Chapter4.WeightedGraph do
 
   @type a :: any
   @type t :: %T{
-               vertices: list(a),
-               edges: list(list(WeightedEdge.t()))
-             }
+          vertices: list(a),
+          edges: list(list(WeightedEdge.t()))
+        }
 
   @spec new(list(a)) :: t
   def new(vertices) do
@@ -118,6 +118,7 @@ defimpl Inspect, for: CCSP.Chapter4.WeightedGraph do
   def inspect(graph, _opts) do
     Enum.reduce(0..(WeightedGraph.vertex_count(graph) - 1), "", fn i, acc ->
       vertex = WeightedGraph.vertex_at(graph, i)
+
       vertex_neighbors =
         WeightedGraph.neighbors_for_index_with_weights(graph, i)
         |> Enum.map(fn neighbor -> "(#{elem(neighbor, 0)}, #{elem(neighbor, 1)})" end)

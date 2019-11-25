@@ -8,10 +8,10 @@ defmodule CCSP.Chapter4.WeightedEdge do
   defstruct [:u, :v, :weight]
 
   @type t :: %T{
-               u: integer,
-               v: integer,
-               weight: integer
-             }
+          u: integer,
+          v: integer,
+          weight: integer
+        }
 
   def new(u, v, weight) do
     %T{u: u, v: v, weight: weight}

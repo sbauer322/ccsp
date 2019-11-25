@@ -109,9 +109,15 @@ defmodule CCSP.Chapter4.Start do
   end
 
   def find_shortest_path(initial \\ "Boston", final \\ "Miami") do
-    results = GenericSearch.breadth_first_search(undirected_graph(), initial, &(&1 == final), &Graph.neighbors_for_vertex/2)
+    results =
+      GenericSearch.breadth_first_search(
+        undirected_graph(),
+        initial,
+        &(&1 == final),
+        &Graph.neighbors_for_vertex/2
+      )
 
-    if (results == nil) do
+    if results == nil do
       IO.puts("No solution found for bfs")
     else
       path = GenericSearch.node_to_path(results)
