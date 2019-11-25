@@ -1,6 +1,6 @@
-defmodule CCSP.Chapter4.Graph do
+defmodule CCSP.Chapter4.WeightedGraph do
   alias __MODULE__, as: T
-  alias CCSP.Chapter4.Edge
+  alias CCSP.Chapter4.WeightedEdge
 
   @moduledoc """
     Corresponds to CCSP in Python, Chapter 4, titled "Graph problems"
@@ -15,9 +15,9 @@ defmodule CCSP.Chapter4.Graph do
 
   @type a :: any
   @type t :: %T{
-          vertices: list(a),
-          edges: list(list(Edge.t()))
-        }
+               vertices: list(a),
+               edges: list(list(WeightedEdge.t()))
+             }
 
   @spec new(list(a)) :: t
   def new(vertices) do
@@ -54,21 +54,21 @@ defmodule CCSP.Chapter4.Graph do
     edges =
       graph.edges
       |> List.update_at(edge.u, &[edge | &1])
-      |> List.update_at(edge.v, &[Edge.reversed(edge) | &1])
+      |> List.update_at(edge.v, &[WeightedEdge.reversed(edge) | &1])
 
     %T{vertices: graph.vertices, edges: edges}
   end
 
-  @spec add_edge_by_indicies(t, non_neg_integer, non_neg_integer) :: t
-  def add_edge_by_indicies(graph, u, v) do
-    add_edge(graph, Edge.new(u, v))
+  @spec add_edge_by_indicies(t, non_neg_integer, non_neg_integer, non_neg_integer) :: t
+  def add_edge_by_indicies(graph, u, v, weight) do
+    add_edge(graph, WeightedEdge.new(u, v, weight))
   end
 
-  @spec add_edge_by_vertices(t, a, a) :: t
-  def add_edge_by_vertices(graph, first, second) do
+  @spec add_edge_by_vertices(t, a, a, non_neg_integer) :: t
+  def add_edge_by_vertices(graph, first, second, weight) do
     u = Enum.find_index(graph.vertices, &(&1 == first))
     v = Enum.find_index(graph.vertices, &(&1 == second))
-    add_edge_by_indicies(graph, u, v)
+    add_edge_by_indicies(graph, u, v, weight)
   end
 
   @spec vertex_at(t, non_neg_integer) :: a
@@ -93,26 +93,37 @@ defmodule CCSP.Chapter4.Graph do
     neighbors_for_index(graph, Enum.find_index(graph.vertices, &(&1 == vertex)))
   end
 
-  @spec edges_for_index(t, non_neg_integer) :: list(Edge.t())
+  @spec neighbors_for_index_with_weights(t, non_neg_integer) :: list({a, non_neg_integer})
+  def neighbors_for_index_with_weights(graph, index) do
+    edges_for_index(graph, index)
+    |> Enum.reduce([], fn edge, acc ->
+      [{vertex_at(graph, edge.v), edge.weight} | acc]
+    end)
+  end
+
+  @spec edges_for_index(t, non_neg_integer) :: list(WeightedEdge.t())
   def edges_for_index(graph, index) do
     Enum.at(graph.edges, index)
   end
 
-  @spec edges_for_vertex(t, a) :: list(Edge.t())
+  @spec edges_for_vertex(t, a) :: list(WeightedEdge.t())
   def edges_for_vertex(graph, vertex) do
     edges_for_index(graph, Enum.find_index(graph.vertices, &(&1 == vertex)))
   end
 end
 
-defimpl Inspect, for: CCSP.Chapter4.Graph do
-  alias CCSP.Chapter4.Graph
+defimpl Inspect, for: CCSP.Chapter4.WeightedGraph do
+  alias CCSP.Chapter4.WeightedGraph
 
   def inspect(graph, _opts) do
-    Enum.reduce(0..(Graph.vertex_count(graph) - 1), "", fn i, acc ->
-      vertex = Graph.vertex_at(graph, i)
-      vertex_neighbors = Graph.neighbors_for_index(graph, i)
+    Enum.reduce(0..(WeightedGraph.vertex_count(graph) - 1), "", fn i, acc ->
+      vertex = WeightedGraph.vertex_at(graph, i)
+      vertex_neighbors =
+        WeightedGraph.neighbors_for_index_with_weights(graph, i)
+        |> Enum.map(fn neighbor -> "(#{elem(neighbor, 0)}, #{elem(neighbor, 1)})" end)
+        |> Enum.join(", ")
 
-      acc <> "#{vertex} -> #{Enum.join(vertex_neighbors, ", ")}\n"
+      acc <> "#{vertex} -> #{vertex_neighbors}\n"
     end)
   end
 end

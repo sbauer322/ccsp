@@ -2,7 +2,7 @@ defmodule CCSP.Chapter4.Edge do
   alias __MODULE__, as: T
 
   @moduledoc """
-    Corresponds to CCSP in Python, Section 4.2, titled "Building a graph framework"
+    Corresponds to CCSP in Python, Chapter 4, titled "Graph problems"
   """
 
   defstruct [:u, :v]
