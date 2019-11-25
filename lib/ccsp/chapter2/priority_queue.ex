@@ -1,5 +1,5 @@
 defmodule CCSP.Chapter2.PriorityQueue do
-  alias CCSP.Chapter2.Node
+  alias CCSP.Chapter2.ComparableValue
   alias __MODULE__, as: T
 
   @moduledoc """
@@ -14,12 +14,12 @@ defmodule CCSP.Chapter2.PriorityQueue do
 
   defstruct list: []
 
-  @spec new(list(Node.t())) :: t(Node.t())
+  @spec new(list(ComparableValue.t())) :: t(ComparableValue.t())
   def new(list \\ []) do
     %T{list: list}
   end
 
-  @spec pop(t(Node.t())) :: {Node.t(), t(Node.t())}
+  @spec pop(t(ComparableValue.t())) :: {ComparableValue.t(), t(ComparableValue.t())}
   def pop(queue) do
     cond do
       empty?(queue) ->
@@ -34,22 +34,22 @@ defmodule CCSP.Chapter2.PriorityQueue do
     end
   end
 
-  @spec push(t(Node.t()), Node.t()) :: t(Node.t())
+  @spec push(t(ComparableValue.t()), ComparableValue.t()) :: t(ComparableValue.t())
   def push(queue, element) do
     %T{list: [element | queue.list]}
   end
 
-  @spec empty?(t(Node.t())) :: boolean
+  @spec empty?(t(ComparableValue.t())) :: boolean
   def empty?(queue) do
     Enum.empty?(queue.list)
   end
 
-  @spec order(list(Node.t())) :: list(Node.t())
+  @spec order(list(ComparableValue.t())) :: list(ComparableValue.t())
   def order(list) do
     list
-    |> Enum.group_by(fn element -> element.heuristic end)
+    |> Enum.group_by(fn element -> ComparableValue.comparable_value(element) end)
     |> Map.to_list()
-    |> Enum.sort(fn {priority, _}, {other_priority, _} -> priority >= other_priority end)
+    |> Enum.sort(fn {priority, _}, {other_priority, _} -> priority < other_priority end)
     |> Enum.flat_map(fn {_priority, elements} -> elements end)
   end
 end

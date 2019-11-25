@@ -95,7 +95,7 @@ defmodule CCSP.Chapter2.GenericSearch do
           (a, b -> list(b))
         ) :: Node.t()
         when a: var, b: var
-  def breadth_first_search(maze, initial, goal_fn, successors_fn) do
+  def breadth_first_search(space, initial, goal_fn, successors_fn) do
     frontier =
       Queue.new()
       |> Queue.push(Node.new(initial, nil))
@@ -104,7 +104,7 @@ defmodule CCSP.Chapter2.GenericSearch do
       MapSet.new()
       |> MapSet.put(initial)
 
-    bfs(maze, frontier, explored, goal_fn, successors_fn)
+    bfs(space, frontier, explored, goal_fn, successors_fn)
   end
 
   @spec bfs(
@@ -115,7 +115,7 @@ defmodule CCSP.Chapter2.GenericSearch do
           (a, b -> list(b))
         ) :: Node.t()
         when a: var, b: var
-  defp bfs(maze, frontier, explored, goal_fn, successors_fn) do
+  defp bfs(space, frontier, explored, goal_fn, successors_fn) do
     if Queue.empty?(frontier) == false do
       {current_node, frontier} = Queue.pop(frontier)
       current_state = current_node.state
@@ -125,7 +125,7 @@ defmodule CCSP.Chapter2.GenericSearch do
       else
         {frontier, explored} =
           Enum.reduce(
-            successors_fn.(maze, current_state),
+            successors_fn.(space, current_state),
             {frontier, explored},
             fn child, {frontier, explored} ->
               if Enum.member?(explored, child) == true do
@@ -138,7 +138,7 @@ defmodule CCSP.Chapter2.GenericSearch do
             end
           )
 
-        bfs(maze, frontier, explored, goal_fn, successors_fn)
+        bfs(space, frontier, explored, goal_fn, successors_fn)
       end
     end
   end
@@ -187,7 +187,7 @@ defmodule CCSP.Chapter2.GenericSearch do
             fn child, {frontier, explored} ->
               new_cost = current_node.cost + 1
 
-              if Enum.member?(explored, child) or Map.get(explored, child) <= new_cost do
+              if child in explored or Map.get(explored, child) <= new_cost do
                 {frontier, explored}
               else
                 frontier =

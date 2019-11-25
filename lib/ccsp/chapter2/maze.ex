@@ -69,6 +69,28 @@ defmodule CCSP.Chapter2.Maze do
     end)
   end
 
+  defp specific_maze() do
+    [
+      ["S", " ", " ", " ", " ", "X", " ", " ", " ", " "],
+      [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
+      [" ", " ", " ", "X", " ", "X", "X", " ", " ", " "],
+      [" ", "X", " ", " ", " ", " ", "X", " ", " ", " "],
+      ["X", " ", " ", " ", " ", " ", "X", " ", " ", "X"],
+      [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
+      [" ", "X", " ", " ", "X", " ", "X", " ", " ", "X"],
+      [" ", " ", "X", "X", " ", " ", "X", " ", " ", " "],
+      [" ", " ", " ", " ", " ", " ", " ", " ", "X", " "],
+      [" ", " ", " ", " ", " ", " ", " ", " ", "X", "G"]
+    ]
+    |> Enum.with_index()
+    |> Enum.map(fn {row, row_index} ->
+      row
+      |> Enum.with_index()
+      |> Enum.map(fn {column, column_index} -> MazeLocation.new(column, row_index, column_index) end)
+    end)
+
+  end
+
   defp random_cell(row, column, value) do
     if :random.uniform() < value do
       MazeLocation.new(cell("BLOCKED"), row, column)
