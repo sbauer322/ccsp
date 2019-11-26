@@ -78,7 +78,7 @@ defmodule CCSP.Chapter4.Graph do
 
   @spec index_of(t, a) :: non_neg_integer
   def index_of(graph, vertex) do
-    Enum.find(graph.vertices, vertex)
+    Enum.find_index(graph.vertices, fn x -> x == vertex end)
   end
 
   @spec neighbors_for_index(t, non_neg_integer) :: list(a)

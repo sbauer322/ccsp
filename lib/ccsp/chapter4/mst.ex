@@ -10,14 +10,6 @@ defmodule CCSP.Chapter4.MST do
 
   @type weighted_path :: list(WeightedEdge.t())
 
-  @spec total_weight(weighted_path) :: non_neg_integer
-  def total_weight(wp) do
-    Enum.map(wp, fn edge ->
-      edge.weight
-    end)
-    |> Enum.sum()
-  end
-
   @spec mst(WeightedGraph.t(), non_neg_integer) :: weighted_path | nil
   def mst(wg, start \\ 0) do
     if start > WeightedGraph.vertex_count(wg) - 1 or start < 0 do
@@ -33,8 +25,13 @@ defmodule CCSP.Chapter4.MST do
     end
   end
 
-  @spec visit(WeightedGraph.t(), list(boolean), PriorityQueue.t(WeightedEdge.t), non_neg_integer) ::
-          {list(boolean), PriorityQueue.t(WeightedEdge.t)}
+  @spec visit(
+          WeightedGraph.t(),
+          list(boolean),
+          PriorityQueue.t(WeightedEdge.t()),
+          non_neg_integer
+        ) ::
+          {list(boolean), PriorityQueue.t(WeightedEdge.t())}
   defp visit(wg, visited, pq, index) do
     visited = List.update_at(visited, index, fn _ -> true end)
 
@@ -64,16 +61,5 @@ defmodule CCSP.Chapter4.MST do
     else
       _ -> result
     end
-  end
-
-  def print_weighted_path(wg, wp) do
-    Enum.each(wp, fn edge ->
-      u = WeightedGraph.vertex_at(wg, edge.u)
-      weight = edge.weight
-      v = WeightedGraph.vertex_at(wg, edge.v)
-      IO.puts("#{u} #{weight} -> #{v}")
-    end)
-
-    IO.puts("Total weight: #{total_weight(wp)}")
   end
 end

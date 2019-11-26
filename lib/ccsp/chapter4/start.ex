@@ -1,7 +1,9 @@
 defmodule CCSP.Chapter4.Start do
   alias CCSP.Chapter4.Graph
   alias CCSP.Chapter4.WeightedGraph
+  alias CCSP.Chapter4.WeightedEdge
   alias CCSP.Chapter4.MST
+  alias CCSP.Chapter4.Dijkstra
   alias CCSP.Chapter2.GenericSearch
 
   @moduledoc """
@@ -129,6 +131,47 @@ defmodule CCSP.Chapter4.Start do
   def find_minimum_spanning_tree() do
     wg = weighted_graph()
     result = MST.mst(wg)
-    MST.print_weighted_path(wg, result)
+    print_weighted_path(wg, result)
+  end
+
+  def find_weighted_shortest_path() do
+    wg = weighted_graph()
+    {distances, path_dict} = Dijkstra.dijkstra(wg, "Los Angeles")
+    name_distance = Dijkstra.distance_array_to_vertex_dict(wg, distances)
+    IO.puts("Distances from Los Angeles:")
+
+    name_distance
+    |> Map.to_list()
+    |> Enum.each(fn {key, value} ->
+      IO.puts("#{key} : #{value}")
+    end)
+
+    IO.puts("")
+    IO.puts("Shortest path from Los Angeles to Boston:")
+    start = WeightedGraph.index_of(wg, "Los Angeles")
+    goal = WeightedGraph.index_of(wg, "Boston")
+    path = Dijkstra.path_dict_to_path(start, goal, path_dict)
+
+    print_weighted_path(wg, path)
+  end
+
+  defp print_weighted_path(wg, wp) do
+    Enum.each(wp, fn edge ->
+      u = WeightedGraph.vertex_at(wg, edge.u)
+      weight = edge.weight
+      v = WeightedGraph.vertex_at(wg, edge.v)
+      IO.puts("#{u} #{weight} -> #{v}")
+    end)
+
+    IO.puts("Total weight: #{total_weight(wp)}")
+  end
+
+  @type weighted_path :: list(WeightedEdge.t())
+  @spec total_weight(weighted_path) :: non_neg_integer
+  def total_weight(wp) do
+    Enum.map(wp, fn edge ->
+      edge.weight
+    end)
+    |> Enum.sum()
   end
 end
