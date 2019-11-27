@@ -19,3 +19,9 @@ defmodule CCSP.Chapter2.Node do
     left.cost + left.heuristic < right.cost + right.heuristic
   end
 end
+
+defimpl CCSP.Chapter2.ComparableValue, for: CCSP.Chapter2.Node do
+  def comparable_value(node) do
+    node.cost + node.heuristic
+  end
+end
