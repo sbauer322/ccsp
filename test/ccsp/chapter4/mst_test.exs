@@ -28,14 +28,14 @@ defmodule CCSP.Chapter4.MSTTest do
     result = MST.mst(wg)
 
     # transform the path produced into something more manageable
-    actual = Enum.map(result, fn edge ->
-      u = WeightedGraph.vertex_at(wg, edge.u)
-      weight = edge.weight
-      v = WeightedGraph.vertex_at(wg, edge.v)
-      {u, v, weight}
-    end)
+    actual =
+      Enum.map(result, fn edge ->
+        u = WeightedGraph.vertex_at(wg, edge.u)
+        weight = edge.weight
+        v = WeightedGraph.vertex_at(wg, edge.v)
+        {u, v, weight}
+      end)
 
     assert expected == actual
   end
-
 end

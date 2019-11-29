@@ -21,12 +21,13 @@ defmodule CCSP.Chapter4.DijkstraTest do
     path = Dijkstra.path_dict_to_path(start, goal, path_dict)
 
     # transform the path produced into something more manageable
-    actual = Enum.map(path, fn edge ->
-      u = WeightedGraph.vertex_at(wg, edge.u)
-      weight = edge.weight
-      v = WeightedGraph.vertex_at(wg, edge.v)
-      {u, v, weight}
-    end)
+    actual =
+      Enum.map(path, fn edge ->
+        u = WeightedGraph.vertex_at(wg, edge.u)
+        weight = edge.weight
+        v = WeightedGraph.vertex_at(wg, edge.v)
+        {u, v, weight}
+      end)
 
     assert expected == actual
   end
