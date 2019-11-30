@@ -7,7 +7,7 @@ defmodule CCSP.Chapter4.Start do
   alias CCSP.Chapter2.GenericSearch
 
   @moduledoc """
-    Convenience module to for setting up and running more elaborate sections.
+    Convenience module for setting up and running more elaborate sections.
 
     Good idea to migrate into some form of test
   """
