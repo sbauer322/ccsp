@@ -3,7 +3,7 @@ defmodule CCSP.Chapter2.Start do
   alias CCSP.Chapter2.GenericSearch
 
   @moduledoc """
-  Convenience module to for setting up and running more elaborate sections.
+  Convenience module for setting up and running more elaborate sections.
   """
 
   #  def run_maze_generation() do

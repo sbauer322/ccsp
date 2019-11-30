@@ -7,7 +7,7 @@ defmodule CCSP.Chapter3.Start do
   alias CCSP.Chapter3.SendMoreMoneyConstraint
 
   @moduledoc """
-  Convenience module to for setting up and running more elaborate sections.
+  Convenience module for setting up and running more elaborate sections.
   """
 
   def run_map_coloring() do
