@@ -29,10 +29,12 @@ defmodule CCSP.Chapter5.Start do
 
     result = GeneticAlgorithm.run(ga)
 
-    if threshold - 1 <= Chromosome.fitness(result) and Chromosome.fitness(result) <= threshold + 1 do
+    # To eventually get a result, we recurse if this particular run never finds a match.
+    # May end up running forever if it cannot find an adequate result (such as if threshold is 130.0)
+    if threshold == Chromosome.fitness(result) do
       result
     else
-      simple_equation
+      run_simple_equation()
     end
   end
 end
