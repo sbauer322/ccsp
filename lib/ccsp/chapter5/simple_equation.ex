@@ -28,11 +28,10 @@ end
 
 defimpl CCSP.Chapter5.Chromosome, for: CCSP.Chapter5.SimpleEquation do
   alias CCSP.Chapter5.SimpleEquation
-  alias __MODULE__, as: T
 
   @type t :: __MODULE__.t()
 
-  @spec fitness(t) :: t
+  @spec fitness(t) :: float
   def fitness(c) do
     # 6x - x^2 + 4y - y^2
     6 * c.x - c.x * c.x + 4 * c.y - c.y * c.y
@@ -66,7 +65,6 @@ end
 
 defimpl Inspect, for: CCSP.Chapter5.SimpleEquation do
   alias CCSP.Chapter5.Chromosome
-  alias CCSP.Chapter5.SimpleEquation
 
   def inspect(c, _opts) do
     fitness = Chromosome.fitness(c)
@@ -76,7 +74,6 @@ end
 
 defimpl String.Chars, for: CCSP.Chapter5.SimpleEquation do
   alias CCSP.Chapter5.Chromosome
-  alias CCSP.Chapter5.SimpleEquation
 
   def to_string(c) do
     fitness = Chromosome.fitness(c)
