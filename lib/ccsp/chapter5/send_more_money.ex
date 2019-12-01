@@ -24,15 +24,10 @@ defmodule CCSP.Chapter5.SendMoreMoney do
     |> Enum.shuffle()
     |> new
   end
-end
 
-defimpl CCSP.Chapter5.Chromosome, for: CCSP.Chapter5.SendMoreMoney do
-  alias CCSP.Chapter5.SendMoreMoney
-
-  @type t :: __MODULE__.t()
-
-  @spec fitness(t) :: float
-  def fitness(c) do
+  @spec fitness_difference(t) ::
+          {non_neg_integer, non_neg_integer, non_neg_integer, non_neg_integer}
+  def fitness_difference(c) do
     s = Enum.find_index(c.letters, &(&1 == "S"))
     e = Enum.find_index(c.letters, &(&1 == "E"))
     n = Enum.find_index(c.letters, &(&1 == "N"))
@@ -45,8 +40,20 @@ defimpl CCSP.Chapter5.Chromosome, for: CCSP.Chapter5.SendMoreMoney do
     send = s * 1_000 + e * 100 + n * 10 + d
     more = m * 1_000 + o * 100 + r * 10 + e
     money = m * 10_000 + o * 1_000 + n * 100 + e * 10 + y
-
     difference = abs(money - (send + more))
+
+    {send, more, money, difference}
+  end
+end
+
+defimpl CCSP.Chapter5.Chromosome, for: CCSP.Chapter5.SendMoreMoney do
+  alias CCSP.Chapter5.SendMoreMoney
+
+  @type t :: __MODULE__.t()
+
+  @spec fitness(t) :: float
+  def fitness(c) do
+    {_, _, _, difference} = SendMoreMoney.fitness_difference(c)
     1 / (difference + 1)
   end
 
@@ -92,43 +99,19 @@ defimpl CCSP.Chapter5.Chromosome, for: CCSP.Chapter5.SendMoreMoney do
 end
 
 defimpl Inspect, for: CCSP.Chapter5.SendMoreMoney do
+  alias CCSP.Chapter5.SendMoreMoney
+
   def inspect(c, _opts) do
-    s = Enum.find_index(c.letters, &(&1 == "S"))
-    e = Enum.find_index(c.letters, &(&1 == "E"))
-    n = Enum.find_index(c.letters, &(&1 == "N"))
-    d = Enum.find_index(c.letters, &(&1 == "D"))
-    m = Enum.find_index(c.letters, &(&1 == "M"))
-    o = Enum.find_index(c.letters, &(&1 == "O"))
-    r = Enum.find_index(c.letters, &(&1 == "R"))
-    y = Enum.find_index(c.letters, &(&1 == "Y"))
-
-    send = s * 1_000 + e * 100 + n * 10 + d
-    more = m * 1_000 + o * 100 + r * 10 + e
-    money = m * 10_000 + o * 1000 + n * 100 + e * 10 + y
-
-    difference = abs(money - (send + more))
-
+    {send, more, money, difference} = SendMoreMoney.fitness_difference(c)
     "#{send} + #{more} = #{money} Difference: #{difference}"
   end
 end
 
 defimpl String.Chars, for: CCSP.Chapter5.SendMoreMoney do
+  alias CCSP.Chapter5.SendMoreMoney
+
   def to_string(c) do
-    s = Enum.find_index(c.letters, &(&1 == "S"))
-    e = Enum.find_index(c.letters, &(&1 == "E"))
-    n = Enum.find_index(c.letters, &(&1 == "N"))
-    d = Enum.find_index(c.letters, &(&1 == "D"))
-    m = Enum.find_index(c.letters, &(&1 == "M"))
-    o = Enum.find_index(c.letters, &(&1 == "O"))
-    r = Enum.find_index(c.letters, &(&1 == "R"))
-    y = Enum.find_index(c.letters, &(&1 == "Y"))
-
-    send = s * 1_000 + e * 100 + n * 10 + d
-    more = m * 1_000 + o * 100 + r * 10 + e
-    money = m * 10_000 + o * 1000 + n * 100 + e * 10 + y
-
-    difference = abs(money - (send + more))
-
+    {send, more, money, difference} = SendMoreMoney.fitness_difference(c)
     "#{send} + #{more} = #{money} Difference: #{difference}"
   end
 end
