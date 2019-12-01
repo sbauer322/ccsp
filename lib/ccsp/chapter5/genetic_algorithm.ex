@@ -62,10 +62,12 @@ defmodule CCSP.Chapter5.GeneticAlgorithm do
 
           IO.puts("Generation #{generation} Best #{Chromosome.fitness(best)} Avg #{avg}")
 
-          highest =
-            reproduce_and_replace(ga)
+          ga =
+            ga
+            |> reproduce_and_replace()
             |> mutate()
-            |> (&Enum.max_by(&1.population, &1.fitness_key)).()
+
+          highest = Enum.max_by(ga.population, ga.fitness_key)
 
           if Chromosome.fitness(highest) > Chromosome.fitness(best) do
             {:cont, {ga, highest}}

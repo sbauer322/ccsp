@@ -1,5 +1,6 @@
 defmodule CCSP.Chapter5.Start do
   alias CCSP.Chapter5.SimpleEquation
+  alias CCSP.Chapter5.SendMoreMoney
   alias CCSP.Chapter5.GeneticAlgorithm
   alias CCSP.Chapter5.Chromosome
 
@@ -27,14 +28,31 @@ defmodule CCSP.Chapter5.Start do
         crossover_chance
       )
 
-    result = GeneticAlgorithm.run(ga)
+    GeneticAlgorithm.run(ga)
+  end
 
-    # To eventually get a result, we recurse if this particular run never finds a match.
-    # May end up running forever if it cannot find an adequate result (such as if threshold is 130.0)
-    if threshold == Chromosome.fitness(result) do
-      result
-    else
-      run_simple_equation()
-    end
+  def run_send_more_money() do
+    initial_population =
+      Enum.map(0..100, fn _i ->
+        SendMoreMoney.random_instance()
+      end)
+
+    threshold = 1.0
+    max_generations = 1000
+    mutation_chance = 0.2
+    crossover_chance = 0.7
+    selection_type = :roulette
+
+    ga =
+      GeneticAlgorithm.new(
+        initial_population,
+        threshold,
+        max_generations,
+        mutation_chance,
+        crossover_chance,
+        selection_type
+      )
+
+    result = GeneticAlgorithm.run(ga)
   end
 end
