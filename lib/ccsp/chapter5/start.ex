@@ -1,8 +1,8 @@
 defmodule CCSP.Chapter5.Start do
   alias CCSP.Chapter5.SimpleEquation
   alias CCSP.Chapter5.SendMoreMoney
+  alias CCSP.Chapter5.ListCompression
   alias CCSP.Chapter5.GeneticAlgorithm
-  alias CCSP.Chapter5.Chromosome
 
   @moduledoc """
     Convenience module for setting up and running more elaborate sections.
@@ -53,6 +53,30 @@ defmodule CCSP.Chapter5.Start do
         selection_type
       )
 
-    result = GeneticAlgorithm.run(ga)
+    GeneticAlgorithm.run(ga)
+  end
+
+  def run_list_compression() do
+    initial_population = Enum.map(0..1000, fn _i ->
+      ListCompression.random_instance()
+    end)
+
+    threshold = 1.0
+    max_generations = 1000
+    mutation_chance = 0.2
+    crossover_chance = 0.7
+    selection_type = :tournament
+
+    ga =
+      GeneticAlgorithm.new(
+        initial_population,
+        threshold,
+        max_generations,
+        mutation_chance,
+        crossover_chance,
+        selection_type
+      )
+
+    GeneticAlgorithm.run(ga)
   end
 end
