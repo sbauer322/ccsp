@@ -5,6 +5,12 @@ defmodule CCSP.Chapter5.ListCompression do
   Corresponds to CCSP in Python, Chapter 5, titled "Genetic Algorithms"
 
   NOTE: This is very slow to find a solution... along the lines of a couple of hours.
+
+  It does not terminate early and runs through all generations. Maybe an implementation issue?
+
+  One potential solution:
+
+  ["Narine","Melanie","Daniel","Michael","Joshua","Lisa","Dean","Brian","Murat","David","Sajid","Wei","Sarah"]
   """
 
   @type t :: %T{
@@ -32,6 +38,7 @@ defmodule CCSP.Chapter5.ListCompression do
   @spec bytes_compressed(t) :: non_neg_integer
   def bytes_compressed(lc) do
     lc.lst
+    |> :erlang.term_to_binary
     |> :zlib.compress()
     |> byte_size
   end
