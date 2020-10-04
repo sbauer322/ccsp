@@ -1,4 +1,4 @@
-# CCSP in Elxir
+# CCSP in Elixir
 
 This project contains selected problems from the book "Classical Computer Science Problems in Python" translated into Elixir.
 
