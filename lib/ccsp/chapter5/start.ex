@@ -57,9 +57,10 @@ defmodule CCSP.Chapter5.Start do
   end
 
   def run_list_compression() do
-    initial_population = Enum.map(0..1000, fn _i ->
-      ListCompression.random_instance()
-    end)
+    initial_population =
+      Enum.map(0..1000, fn _i ->
+        ListCompression.random_instance()
+      end)
 
     threshold = 1.0
     max_generations = 1000

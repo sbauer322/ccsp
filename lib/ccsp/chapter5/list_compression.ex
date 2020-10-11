@@ -14,15 +14,28 @@ defmodule CCSP.Chapter5.ListCompression do
   """
 
   @type t :: %T{
-               lst: list(any)
-             }
+          lst: list(any)
+        }
 
   defstruct [
     :lst
   ]
 
-  @people ["Michael", "Sarah", "Joshua", "Narine", "David",
-    "Sajid", "Melanie", "Daniel", "Wei", "Dean", "Brian", "Murat", "Lisa"]
+  @people [
+    "Michael",
+    "Sarah",
+    "Joshua",
+    "Narine",
+    "David",
+    "Sajid",
+    "Melanie",
+    "Daniel",
+    "Wei",
+    "Dean",
+    "Brian",
+    "Murat",
+    "Lisa"
+  ]
 
   @spec new(list(any)) :: t
   def new(lst) do
@@ -38,7 +51,7 @@ defmodule CCSP.Chapter5.ListCompression do
   @spec bytes_compressed(t) :: non_neg_integer
   def bytes_compressed(lc) do
     lc.lst
-    |> :erlang.term_to_binary
+    |> :erlang.term_to_binary()
     |> :zlib.compress()
     |> byte_size
   end
@@ -63,17 +76,17 @@ defimpl CCSP.Chapter5.Chromosome, for: CCSP.Chapter5.ListCompression do
     new_lc1_lst =
       lc1.lst
       |> List.replace_at(
-           Enum.find_index(lc1.lst, &(&1 == l2)),
-           Enum.at(lc1.lst, idx2)
-         )
+        Enum.find_index(lc1.lst, &(&1 == l2)),
+        Enum.at(lc1.lst, idx2)
+      )
       |> List.replace_at(idx2, l2)
 
     new_lc2_lst =
       lc2.lst
       |> List.replace_at(
-           Enum.find_index(lc2.lst, &(&1 == l1)),
-           Enum.at(lc2.lst, idx1)
-         )
+        Enum.find_index(lc2.lst, &(&1 == l1)),
+        Enum.at(lc2.lst, idx1)
+      )
       |> List.replace_at(idx1, l1)
 
     {
