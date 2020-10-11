@@ -34,6 +34,7 @@ be found at [https://hexdocs.pm/ccsp](https://hexdocs.pm/ccsp).
 
 ```
 iex -S mix
+mix deps.get
 mix test
 mix dialyzer
 mix format

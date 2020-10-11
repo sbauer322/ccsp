@@ -6,7 +6,7 @@ defmodule CCSP.MixProject do
       app: :ccsp,
       escript: escript_config(),
       version: "0.1.0",
-      elixir: "~> 1.9",
+      elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
@@ -31,13 +31,12 @@ defmodule CCSP.MixProject do
     [
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
-      {:ex_doc, "~> 0.19"},
-      {:earmark, "~> 1.2.4"},
-      {:stream_data, "~> 0.1", only: :test},
-      {:excoveralls, "~> 0.10", only: :test},
-      #      {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
-      {:dialyxir, "~> 1.0.0-rc.7", only: [:dev], runtime: false},
-      {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false}
+      {:ex_doc, "~> 0.22.6"},
+      {:earmark, "~> 1.4.10"},
+      {:stream_data, "~> 0.5.0", only: :test},
+      {:excoveralls, "~> 0.13.2", only: :test},
+      {:dialyxir, "~> 1.0.0", only: [:dev], runtime: false},
+      {:credo, "~> 1.4.1", only: [:dev, :test], runtime: false}
     ]
   end
 

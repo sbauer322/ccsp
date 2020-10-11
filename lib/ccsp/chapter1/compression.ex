@@ -1,5 +1,5 @@
 defmodule CCSP.Chapter1.Compression do
-  import Bitwise, only: :macros
+  use Bitwise, only_operators: true
 
   @moduledoc """
   Corresponds to CCSP in Python, Section 1.2, titled "Trivial Compression"
