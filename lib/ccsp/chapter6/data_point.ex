@@ -6,9 +6,9 @@ defmodule CCSP.Chapter6.DataPoint do
   """
 
   @type t :: %T{
-               originals: list(float),
-               dimensions: list(float)
-             }
+          originals: list(float),
+          dimensions: list(float)
+        }
 
   defstruct [
     :originals,
@@ -17,7 +17,7 @@ defmodule CCSP.Chapter6.DataPoint do
 
   @spec new(list(float)) :: t
   def new(initial) do
-    %T{letters: letters}
+      %T{originals: initial, dimensions: initial}
   end
 
   @spec num_dimensions(t) :: non_neg_integer
@@ -34,7 +34,20 @@ defmodule CCSP.Chapter6.DataPoint do
     |> :math.sqrt()
   end
 
-  def __eq__ do
-    # TODO: Some way to compare datapoint structs based on dimension property
+  @spec equal?(t, t) :: bool
+  def equal?(dp1, dp2) do
+    dp1.dimensions == dp2.dimensions
+  end
+end
+
+defimpl Inspect, for: CCSP.Chapter6.DataPoint do
+  def inspect(dp, _opts) do
+    "#{dp.dimensions}"
+  end
+end
+
+defimpl String.Chars, for: CCSP.Chapter6.DataPoint do
+  def to_string(dp) do
+    "#{dp.dimensions}"
   end
 end

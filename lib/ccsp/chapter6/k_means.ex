@@ -1,11 +1,10 @@
 defmodule CCSP.Chapter6.KMeans do
-
   @spec zscores(list) :: list(float)
   def zscores(original) do
     avg = mean(original)
     std = pstdev(original)
 
-    if (std == 0) do
+    if std == 0 do
       List.duplicate(0, length(original))
     else
       Enum.map(original, fn x ->
@@ -42,6 +41,7 @@ defmodule CCSP.Chapter6.KMeans do
 
   def variance(list) when is_list(list) do
     population_mean = mean(list)
+
     list
     |> Enum.map(fn elem ->
       :math.pow(elem - population_mean, 2)
